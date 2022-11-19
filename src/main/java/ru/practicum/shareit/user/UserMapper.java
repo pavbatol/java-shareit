@@ -13,6 +13,7 @@ public final class UserMapper {
     private UserMapper() {
     }
 
+    @NotNull
     public static UserDto toUserDto(@NotNull User user) {
         return UserDto.builder()
                 .id(user.getId())
@@ -21,6 +22,7 @@ public final class UserMapper {
                 .build();
     }
 
+    @NotNull
     public static User toUser(@NotNull UserDto userDto, @NotNull User targetUser) {
             return User.builder()
                     .id(targetUser.getId())
@@ -30,6 +32,7 @@ public final class UserMapper {
 
     }
 
+    @NotNull
     public static User toUser(@NotNull UserDto userDto) {
         return User.builder()
                 .id(userDto.getId())
