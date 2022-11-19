@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import ru.practicum.shareit.Entity;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class User implements Entity {
 
     @EqualsAndHashCode.Include
     private Long id;

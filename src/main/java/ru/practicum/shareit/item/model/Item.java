@@ -1,8 +1,11 @@
 package ru.practicum.shareit.item.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import ru.practicum.shareit.Entity;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,9 +16,11 @@ import javax.validation.constraints.Size;
  */
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Item {
+public class Item implements Entity {
 
     @EqualsAndHashCode.Include
     private Long id;

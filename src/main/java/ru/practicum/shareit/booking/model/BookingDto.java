@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import ru.practicum.shareit.Entity;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class BookingDto {
+public class BookingDto implements Entity {
 
     @EqualsAndHashCode.Include
     private Long id;
