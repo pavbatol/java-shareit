@@ -1,30 +1,36 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.request.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 
 /**
- * TODO Sprint add-controllers.
+ * TODO Sprint add-item-requests.
  */
 
 @Data
 @Accessors(chain = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class ItemRequestDto {
 
     @EqualsAndHashCode.Include
     private Long id;
 
     @NotBlank
-    @Size(max = 50)
     private String name;
 
-    @Email
     @NotBlank
-    private String email;
+    @Size(max = 200)
+    private String description;
+
+    @NotNull
+    private Long requester;
+
+    @NotNull
+    private LocalDateTime created;
 }

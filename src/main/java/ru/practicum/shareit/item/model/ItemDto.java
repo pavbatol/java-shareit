@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.item.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,11 +23,10 @@ public class ItemDto {
     @NotBlank
     private String name;
 
+    @NotBlank
     @Size(max = 200)
     private String description;
 
     @NotNull
     private Boolean available;
-
-    private Long requestId;
 }
