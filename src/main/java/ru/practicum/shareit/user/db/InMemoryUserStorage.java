@@ -21,7 +21,7 @@ public class InMemoryUserStorage implements UserStorage {
                         .orElse(0L) + 1;
         user.setId(id);
         users.put(id, user);
-        return null;
+        return user;
     }
 
     @Override

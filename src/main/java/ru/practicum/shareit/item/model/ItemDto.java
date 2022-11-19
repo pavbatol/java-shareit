@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 import ru.practicum.shareit.common.Entity;
 
@@ -18,7 +15,7 @@ import javax.validation.constraints.Size;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain = true)
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ItemDto implements Entity {
 

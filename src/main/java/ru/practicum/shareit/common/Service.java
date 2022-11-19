@@ -6,7 +6,7 @@ public interface Service<T> {
 
     T add(T t);
 
-    T update(T t);
+    T update(T t, Long id);
 
     T remove(Long id);
 

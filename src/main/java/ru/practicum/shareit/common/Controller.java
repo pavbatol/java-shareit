@@ -13,9 +13,10 @@ public interface Controller<T> {
     @Operation(summary = "add")
     T add(@Valid @RequestBody T t);
 
-    @PutMapping
+    @PatchMapping("/{id}")
     @Operation(summary = "update")
-    T update(@Valid @RequestBody T t);
+    T update(@Valid @RequestBody T t,
+             @PathVariable(value = "id") Long id);
 
     @DeleteMapping("/{id}")
     @Operation(summary = "remove")

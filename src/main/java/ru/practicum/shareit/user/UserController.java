@@ -1,22 +1,52 @@
 package ru.practicum.shareit.user;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.shareit.common.impl.AbstractController;
-import ru.practicum.shareit.user.model.User;
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+
+import javax.validation.Valid;
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/users")
-public class UserController extends AbstractController<User, UserService> {
+public class UserController  {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        super(userService);
-        this.userService = userService;
+    @PostMapping
+    @Operation(summary = "add")
+    public UserDto add(@Valid @RequestBody UserDto userDto) {
+        return userService.add((userDto));
+    }
+
+    @PatchMapping("/{userId}")
+    @Operation(summary = "update")
+    public UserDto update(@Valid @RequestBody UserDto userDto,
+                       @PathVariable(value = "userId") Long id) {
+        return userService.update(userDto, id);
+    }
+
+    @DeleteMapping("/{userId}")
+    @Operation(summary = "remove")
+    public UserDto remove(@PathVariable(value = "userId") Long id) {
+        return userService.remove(id);
+    }
+
+    @GetMapping
+    @Operation(summary = "findAll")
+    public List<UserDto> findAll() {
+        return userService.findAll();
+    }
+
+    @GetMapping("/{userId}")
+    @Operation(summary = "findById")
+    public UserDto findById(@PathVariable(value = "userId") Long id) {
+        return userService.findById(id);
     }
 }

@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import ru.practicum.shareit.common.Entity;
 
 import javax.validation.constraints.Email;
@@ -14,18 +14,16 @@ import javax.validation.constraints.Size;
  */
 
 @Data
-@Accessors(chain = true)
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserDto implements Entity {
 
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
     @Size(max = 50)
     private String name;
 
     @Email
-    @NotBlank
     private String email;
 }

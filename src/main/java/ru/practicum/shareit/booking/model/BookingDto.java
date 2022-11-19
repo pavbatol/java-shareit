@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -13,7 +14,7 @@ import java.time.LocalDate;
  */
 
 @Data
-@Accessors(chain = true)
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BookingDto implements Entity {
 

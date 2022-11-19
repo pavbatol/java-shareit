@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
  */
 
 @Data
-@Accessors(chain = true)
+@Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ItemRequestDto implements Entity {
 
