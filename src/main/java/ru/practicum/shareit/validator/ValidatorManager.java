@@ -1,8 +1,8 @@
 package ru.practicum.shareit.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.shareit.Entity;
-import ru.practicum.shareit.Storage;
+import ru.practicum.shareit.common.Entity;
+import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;

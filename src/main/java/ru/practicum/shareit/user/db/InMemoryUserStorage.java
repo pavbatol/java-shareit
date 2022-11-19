@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.db;
 
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotNull;
@@ -8,7 +9,9 @@ import java.util.*;
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 
+@Repository("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
+
     private final Map<Long, User> users = new HashMap<>();
 
     @Override
