@@ -1,10 +1,13 @@
 package ru.practicum.shareit.user;
 
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+@Validated
 public final class UserMapper {
 
     private UserMapper() {

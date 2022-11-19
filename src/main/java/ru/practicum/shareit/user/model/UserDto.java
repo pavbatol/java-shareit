@@ -21,9 +21,11 @@ public class UserDto implements Entity {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @NotBlank
     @Size(max = 50)
     private String name;
 
+    @NotBlank
     @Email
     private String email;
 }
