@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.*;
-import lombok.experimental.Accessors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.common.Entity;
 
 import javax.validation.constraints.NotBlank;

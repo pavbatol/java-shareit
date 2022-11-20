@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import lombok.experimental.Accessors;
 import ru.practicum.shareit.common.Entity;
+import ru.practicum.shareit.common.OnAdd;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -22,13 +22,13 @@ public class ItemDto implements Entity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
+    @NotBlank(groups = OnAdd.class)
     private String name;
 
-    @NotBlank
+    @NotBlank(groups = OnAdd.class)
     @Size(max = 200)
     private String description;
 
-    @NotNull
+    @NotNull(groups = OnAdd.class)
     private Boolean available;
 }

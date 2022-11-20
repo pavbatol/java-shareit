@@ -1,13 +1,14 @@
 package ru.practicum.shareit.item.db;
 
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 
+@Repository("inMemoryItemStorage")
 public class InMemoryItemStorage implements ItemStorage {
 
     private long lastId = 0;
@@ -47,5 +48,15 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public boolean contains(Long id) {
         return items.containsKey(id);
+    }
+
+    @Override
+    public List<Item> findAllByUserId(Long userId) {
+        return null;
+    }
+
+    @Override
+    public List<Item> search(String text) {
+        return null;
     }
 }
