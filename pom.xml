@@ -54,31 +54,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.jacoco/jacoco-maven-plugin -->
-		<dependency>
-			<groupId>org.jacoco</groupId>
-			<artifactId>jacoco-maven-plugin</artifactId>
-			<version>0.8.8</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.github.spotbugs/spotbugs-maven-plugin -->
-		<dependency>
-			<groupId>com.github.spotbugs</groupId>
-			<artifactId>spotbugs-maven-plugin</artifactId>
-			<version>4.7.3.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-checkstyle-plugin</artifactId>
-			<version>3.2.0</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
 			<version>1.6.12</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -131,18 +112,18 @@
 							<phase>compile</phase>
 						</execution>
 					</executions>
-<!--					<dependencies>-->
-<!--						<dependency>-->
-<!--							<groupId>com.puppycrawl.tools</groupId>-->
-<!--							<artifactId>checkstyle</artifactId>-->
-<!--							<version>10.3</version>-->
-<!--						</dependency>-->
-<!--					</dependencies>-->
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>9.3</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
 					<artifactId>spotbugs-maven-plugin</artifactId>
-					<version>4.7.0.0</version>
+					<version>4.7.3.0</version>
 					<configuration>
 						<effort>Max</effort>
 						<threshold>High</threshold>
