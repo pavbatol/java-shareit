@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 import static ru.practicum.shareit.validator.ValidatorManager.validateId;
@@ -52,11 +53,18 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<Item> findAllByUserId(Long userId) {
-        return null;
+        return items.values().stream()
+                .filter(item -> Objects.equals(item.getOwner(), userId))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Item> search(String text) {
-        return null;
+        final String searched = text.toLowerCase();
+        return items.values().stream()
+                .filter(item -> item.getName().toLowerCase().contains(searched)
+                        || item.getDescription().toLowerCase().contains(searched))
+                .filter(Item::getAvailable)
+                .collect(Collectors.toList());
     }
 }
