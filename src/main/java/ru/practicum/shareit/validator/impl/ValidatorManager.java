@@ -3,7 +3,7 @@ package ru.practicum.shareit.validator.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import ru.practicum.shareit.common.Entity;
-import ru.practicum.shareit.common.Storage;
+import ru.practicum.shareit.common.CrudStorage;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidateException;
@@ -34,20 +34,20 @@ public final class ValidatorManager {
         }
     }
 
-    public static void validateId(@NotNull Storage<?> storage, Long id) {
+    public static void validateId(@NotNull CrudStorage<?> storage, Long id) {
         if (!storage.contains(id)) {
             throw new NotFoundException(String.format("id %s не найден", id));
         }
     }
 
-    public static void validateId(@NotNull Storage<?> storage, Long id, boolean checkedForNull) {
+    public static void validateId(@NotNull CrudStorage<?> storage, Long id, boolean checkedForNull) {
         if (checkedForNull && Objects.isNull(id)) {
             throw new RuntimeException(String.format("id не должен быть %s", id));
         }
         validateId(storage, id);
     }
 
-    public static void validateId(@NotNull Storage<?> storage, @NotNull Entity entity, @Nullable String message) {
+    public static void validateId(@NotNull CrudStorage<?> storage, @NotNull Entity entity, @Nullable String message) {
         if (!storage.contains(entity.getId())) {
             if (Objects.isNull(message) || message.isBlank()) {
                 message = String.format("Такого id для %s нет: %s", entity.getClass().getSimpleName(), entity.getId());
@@ -58,7 +58,7 @@ public final class ValidatorManager {
     }
 
     @NotNull
-    public static <T> T getNonNullObject(@NotNull Storage<T> storage, Long id) throws NotFoundException {
+    public static <T> T getNonNullObject(@NotNull CrudStorage<T> storage, Long id) throws NotFoundException {
         return storage.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Объект по id %s не найден", id)));
     }

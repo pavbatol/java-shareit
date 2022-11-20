@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
 
-public interface Storage<T> {
+public interface CrudStorage<T> {
     T add(T t);
 
     T update(T t);

@@ -7,7 +7,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/default")
-public interface Controller<T> {
+public interface CrudController<T> {
 
     @PostMapping
     @Operation(summary = "add")

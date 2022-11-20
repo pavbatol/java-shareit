@@ -2,7 +2,7 @@ package ru.practicum.shareit.common;
 
 import java.util.List;
 
-public interface Service<T> {
+public interface CrudService<T> {
 
     T add(T t);
 
