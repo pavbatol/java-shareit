@@ -1,6 +1,7 @@
 package ru.practicum.shareit.validator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 import ru.practicum.shareit.common.Entity;
 import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
@@ -10,7 +11,6 @@ import ru.practicum.shareit.user.db.UserStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -31,10 +31,7 @@ public final class ValidatorManager {
         } else if (clazz == User.class) {
             // new UserValidator().runValidation((User) t);
         } else if (clazz == UserDto.class) {
-//            String email = ((UserDto) t).getEmail();
-//            if (Objects.nonNull(email) && ) {
-//
-//            };
+            //--
         }
     }
 
@@ -68,7 +65,7 @@ public final class ValidatorManager {
     }
 
     public static void  checkDuplicatedEmail(@NotNull UserStorage userStorage, String email) {
-        if (Objects.nonNull(email) && userStorage.contains(email)) {
+        if (Objects.nonNull(email) && userStorage.containsEmail(email)) {
             throw new AlreadyExistsException("Такой email уже есть: " + email);
         }
     }

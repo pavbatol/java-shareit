@@ -27,5 +27,5 @@ public interface Storage<T> {
         }
     }
 
-    boolean contains(String email);
+    boolean containsEmail(String email);
 }

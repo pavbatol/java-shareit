@@ -12,16 +12,14 @@ import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 @Repository("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
 
+    private long lastId = 0;
     private final Map<Long, User> users = new HashMap<>();
     private final Set<String> userEmails = new HashSet<>();
 
     @Override
     public User add(@NotNull User user) {
-        long id = users.keySet().stream()
-                        .max(Long::compare)
-                        .orElse(0L) + 1;
-        user.setId(id);
-        users.put(id, user);
+        user.setId(++lastId);
+        users.put(user.getId(), user);
         userEmails.add(user.getEmail());
         return user;
     }
@@ -60,9 +58,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean contains(String email) {
+    public boolean containsEmail(String email) {
         return userEmails.contains(email);
     }
-
-
 }

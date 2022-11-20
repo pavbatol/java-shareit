@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
     @Override
     public UserDto add(@NotNull UserDto userDto) {
-        // validateEntity(user);
         checkDuplicatedEmail(userStorage, userDto.getEmail());
         User added = userStorage.add(toUser(userDto));
         log.debug("Добавлен {}: {}", ENTITY_SIMPLE_NAME, added);
@@ -36,7 +35,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(@NotNull UserDto userDto, Long id) {
-        // validateEntity(user);
         checkDuplicatedEmail(userStorage, userDto.getEmail());
         User updated = userStorage.update(toUser(userDto, getNonNullObject(userStorage, id)));
         log.debug("Обновлен {}: {}", ENTITY_SIMPLE_NAME, updated);
