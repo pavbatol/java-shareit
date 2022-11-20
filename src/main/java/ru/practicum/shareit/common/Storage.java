@@ -26,6 +26,4 @@ public interface Storage<T> {
             return false;
         }
     }
-
-    boolean containsEmail(String email);
 }
