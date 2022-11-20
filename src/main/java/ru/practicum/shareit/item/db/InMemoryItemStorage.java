@@ -6,8 +6,8 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.ValidatorManager.validateId;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.validateId;
 
 @Repository("inMemoryItemStorage")
 public class InMemoryItemStorage implements ItemStorage {

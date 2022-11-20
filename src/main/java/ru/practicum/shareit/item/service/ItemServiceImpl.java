@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.ItemMapper.toItem;
 import static ru.practicum.shareit.item.ItemMapper.toItemDto;
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.ValidatorManager.validateId;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.validateId;
 
 @Slf4j
 @Service

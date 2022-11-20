@@ -23,11 +23,11 @@ public final class UserMapper {
 
     @NotNull
     public static User toUser(@NotNull UserDto userDto, @NotNull User targetUser) {
-            return User.builder()
-                    .id(targetUser.getId())
-                    .name(userDto.getName() == null ? targetUser.getName() : userDto.getName())
-                    .email(userDto.getEmail() == null ? targetUser.getEmail() : userDto.getEmail())
-                    .build();
+        return User.builder()
+                .id(targetUser.getId())
+                .name(userDto.getName() == null ? targetUser.getName() : userDto.getName())
+                .email(userDto.getEmail() == null ? targetUser.getEmail() : userDto.getEmail())
+                .build();
 
     }
 

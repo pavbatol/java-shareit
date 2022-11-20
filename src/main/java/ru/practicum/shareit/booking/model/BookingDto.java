@@ -3,7 +3,6 @@ package ru.practicum.shareit.booking.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import ru.practicum.shareit.common.Entity;
 
 import javax.validation.constraints.NotNull;

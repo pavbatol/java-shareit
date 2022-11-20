@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
-public class UserController  {
+public class UserController {
 
     private final UserService userService;
 
@@ -32,7 +32,7 @@ public class UserController  {
     @PatchMapping("/{userId}")
     @Operation(summary = "update")
     public UserDto update(@Valid @RequestBody UserDto userDto,
-                       @PathVariable(value = "userId") Long id) {
+                          @PathVariable(value = "userId") Long id) {
         return userService.update(userDto, id);
     }
 

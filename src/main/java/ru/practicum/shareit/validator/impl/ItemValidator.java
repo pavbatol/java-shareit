@@ -15,7 +15,7 @@ public class ItemValidator implements Validator<Item> {
         if (item.getName().isBlank()) {
             throw new ValidateException("Имя не должно быть пустым");
         }
-        if (Objects.nonNull( item.getDescription()) && item.getDescription().length() > 200) {
+        if (Objects.nonNull(item.getDescription()) && item.getDescription().length() > 200) {
             throw new ValidateException("Максимальная длина описания 200 символов");
         }
     }

@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.user.UserMapper.toUser;
 import static ru.practicum.shareit.user.UserMapper.toUserDto;
-import static ru.practicum.shareit.validator.ValidatorManager.checkDuplicatedEmail;
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.checkDuplicatedEmail;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
 
 @Slf4j
 @Service
@@ -25,6 +25,7 @@ public class UserServiceImpl implements UserService {
     protected static final String ENTITY_SIMPLE_NAME = "Пользователь";
 
     private final UserStorage userStorage;
+
     @Override
     public UserDto add(@NotNull UserDto userDto) {
         checkDuplicatedEmail(userStorage, userDto.getEmail());

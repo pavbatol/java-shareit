@@ -26,9 +26,9 @@ public final class ValidatorManager {
         }
         Class<? extends Entity> clazz = t.getClass();
         if (clazz == Item.class) {
-             new ItemValidator().runValidation((Item) t);
+            new ItemValidator().runValidation((Item) t);
         } else if (clazz == User.class) {
-             new UserValidator().runValidation((User) t);
+            new UserValidator().runValidation((User) t);
         } else if (clazz == UserDto.class) {
             //--
         }
@@ -63,7 +63,7 @@ public final class ValidatorManager {
                 .orElseThrow(() -> new NotFoundException(String.format("Объект по id %s не найден", id)));
     }
 
-    public static void  checkDuplicatedEmail(@NotNull UserStorage userStorage, String email) {
+    public static void checkDuplicatedEmail(@NotNull UserStorage userStorage, String email) {
         if (Objects.nonNull(email) && userStorage.containsEmail(email)) {
             throw new AlreadyExistsException("Такой email уже есть: " + email);
         }

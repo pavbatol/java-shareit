@@ -6,8 +6,8 @@ import ru.practicum.shareit.user.model.User;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.ValidatorManager.validateId;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.impl.ValidatorManager.validateId;
 
 @Repository("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
