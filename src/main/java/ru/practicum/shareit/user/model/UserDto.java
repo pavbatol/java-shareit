@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.common.Entity;
+import ru.practicum.shareit.common.OnAdd;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -21,11 +22,11 @@ public class UserDto implements Entity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @NotBlank
+    @NotBlank(groups = OnAdd.class)
     @Size(max = 50)
     private String name;
 
-    @NotBlank
+    @NotBlank(groups = OnAdd.class)
     @Email
     private String email;
 }
