@@ -1,4 +1,4 @@
-package ru.practicum.shareit.validator;
+package ru.practicum.shareit.validator.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
@@ -6,6 +6,7 @@ import ru.practicum.shareit.common.Entity;
 import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
+import ru.practicum.shareit.exeption.ValidateException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.db.UserStorage;
 import ru.practicum.shareit.user.model.User;
@@ -21,15 +22,13 @@ public final class ValidatorManager {
 
     public static <T extends Entity> void validateEntity(T t) {
         if (Objects.isNull(t)) {
-            throw new RuntimeException("Объект типа " + Entity.class.getSimpleName() + " не инициализирован");
+            throw new ValidateException("Объект типа " + Entity.class.getSimpleName() + " не инициализирован");
         }
-
         Class<? extends Entity> clazz = t.getClass();
-
         if (clazz == Item.class) {
-            // new ItemValidator().runValidation((Item) t);
+             new ItemValidator().runValidation((Item) t);
         } else if (clazz == User.class) {
-            // new UserValidator().runValidation((User) t);
+             new UserValidator().runValidation((User) t);
         } else if (clazz == UserDto.class) {
             //--
         }

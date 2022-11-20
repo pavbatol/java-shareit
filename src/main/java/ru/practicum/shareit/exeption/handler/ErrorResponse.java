@@ -12,11 +12,17 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @Value
 @Builder
 public class ErrorResponse {
+
     OffsetDateTime timestamp = OffsetDateTime.now();
+
     int status;
+
     String endPoint;
+
     @JsonInclude(NON_NULL)
     String detailMessage;
+
     String error;
+
     List<String> reasons;
 }
