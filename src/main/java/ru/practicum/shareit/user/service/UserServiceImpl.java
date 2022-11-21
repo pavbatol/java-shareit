@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto add(@NotNull UserDto userDto) {
-        checkDuplicatedEmail(userStorage, userDto.getEmail());
+        checkDuplicatedEmail(userStorage, userDto.getEmail(), null);
         User added = userStorage.add(toUser(userDto));
         log.debug("Добавлен {}: {}", ENTITY_SIMPLE_NAME, added);
         return toUserDto(added);
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(@NotNull UserDto userDto, Long id) {
-        checkDuplicatedEmail(userStorage, userDto.getEmail());
+        checkDuplicatedEmail(userStorage, userDto.getEmail(), userDto.getId());
         User updated = userStorage.update(toUser(userDto, getNonNullObject(userStorage, id)));
         log.debug("Обновлен {}: {}", ENTITY_SIMPLE_NAME, updated);
         return toUserDto(updated);

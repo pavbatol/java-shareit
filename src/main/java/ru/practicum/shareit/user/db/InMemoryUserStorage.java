@@ -14,13 +14,11 @@ public class InMemoryUserStorage implements UserStorage {
 
     private long lastId = 0;
     private final Map<Long, User> users = new HashMap<>();
-    private final Set<String> userEmails = new HashSet<>();
 
     @Override
     public User add(@NotNull User user) {
         user.setId(++lastId);
         users.put(user.getId(), user);
-        userEmails.add(user.getEmail());
         return user;
     }
 
@@ -29,8 +27,6 @@ public class InMemoryUserStorage implements UserStorage {
         validateId(this, user, null);
         String email = getNonNullObject(this, user.getId()).getEmail();
         users.put(user.getId(), user);
-        userEmails.remove(email);
-        userEmails.add(user.getEmail());
         return user;
     }
 
@@ -38,7 +34,6 @@ public class InMemoryUserStorage implements UserStorage {
     public User remove(Long id) {
         User user = getNonNullObject(this, id);
         users.remove(id);
-        userEmails.remove(user.getEmail());
         return user;
     }
 
@@ -58,7 +53,11 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean containsEmail(String email) {
-        return userEmails.contains(email);
+    public boolean containsEmail(String email, Long exceptUserId) {
+        return users.values().stream()
+                .filter(us -> !Objects.equals(us.getId(), exceptUserId))
+                .map(User::getEmail)
+                .filter(Objects::nonNull)
+                .anyMatch(str -> str.equals(email));
     }
 }

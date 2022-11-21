@@ -63,8 +63,8 @@ public final class ValidatorManager {
                 .orElseThrow(() -> new NotFoundException(String.format("Объект по id %s не найден", id)));
     }
 
-    public static void checkDuplicatedEmail(@NotNull UserStorage userStorage, String email) {
-        if (Objects.nonNull(email) && userStorage.containsEmail(email)) {
+    public static void checkDuplicatedEmail(@NotNull UserStorage userStorage, String email, Long exceptUserId) {
+        if (Objects.nonNull(email) && userStorage.containsEmail(email, exceptUserId)) {
             throw new AlreadyExistsException("Такой email уже есть: " + email);
         }
     }
