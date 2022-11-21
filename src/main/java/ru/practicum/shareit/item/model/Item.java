@@ -33,10 +33,10 @@ public class Item implements Entity {
     @NotNull
     private Boolean available;
 
-    private Long request;
+    private Long requestId;
 
     @NotNull
-    private Long owner;
+    private Long ownerId;
 }
 
 

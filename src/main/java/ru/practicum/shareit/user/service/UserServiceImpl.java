@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.user.UserMapper.toUser;
 import static ru.practicum.shareit.user.UserMapper.toUserDto;
-import static ru.practicum.shareit.validator.impl.ValidatorManager.checkDuplicatedEmail;
-import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.ValidatorManager.checkDuplicatedEmail;
+import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
 @Slf4j
 @Service

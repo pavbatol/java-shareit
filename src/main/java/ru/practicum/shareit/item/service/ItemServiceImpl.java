@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.ItemMapper.toItem;
 import static ru.practicum.shareit.item.ItemMapper.toItemDto;
-import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.impl.ValidatorManager.validateId;
+import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 
 @Slf4j
 @Service
@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
         Item orig = getNonNullObject(itemStorage, itemId);
-        if (!Objects.equals(orig.getOwner(), userId)) {
+        if (!Objects.equals(orig.getOwnerId(), userId)) {
             throw new NotFoundException("Редактировать может только владелец");
         }
         Item updated = itemStorage.update(toItem(itemDto, orig));
@@ -63,10 +63,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> search(String text) {
-        List<Item> searched = text.isBlank()
+    public List<ItemDto> searchByNameOrDescription(String text) {
+        List<Item> searched = Objects.isNull(text) || text.isBlank()
                 ? Collections.emptyList()
-                : itemStorage.search(text);
+                : itemStorage.searchByNameOrDescription(text);
         return searched.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 }

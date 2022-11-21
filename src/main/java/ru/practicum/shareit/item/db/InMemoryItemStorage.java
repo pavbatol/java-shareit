@@ -6,8 +6,8 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.impl.ValidatorManager.validateId;
+import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 
 @Repository("inMemoryItemStorage")
 public class InMemoryItemStorage implements ItemStorage {
@@ -54,12 +54,12 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public List<Item> findAllByUserId(Long userId) {
         return items.values().stream()
-                .filter(item -> Objects.equals(item.getOwner(), userId))
+                .filter(item -> Objects.equals(item.getOwnerId(), userId))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<Item> search(String text) {
+    public List<Item> searchByNameOrDescription(String text) {
         final String searched = text.toLowerCase();
         return items.values().stream()
                 .filter(item -> item.getName().toLowerCase().contains(searched)

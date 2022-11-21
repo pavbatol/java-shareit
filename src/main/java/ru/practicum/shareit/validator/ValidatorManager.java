@@ -1,16 +1,12 @@
-package ru.practicum.shareit.validator.impl;
+package ru.practicum.shareit.validator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
-import ru.practicum.shareit.common.Entity;
 import ru.practicum.shareit.common.CrudStorage;
+import ru.practicum.shareit.common.Entity;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
-import ru.practicum.shareit.exeption.ValidateException;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.db.UserStorage;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -18,20 +14,6 @@ import java.util.Objects;
 @Slf4j
 public final class ValidatorManager {
     private ValidatorManager() {
-    }
-
-    public static <T extends Entity> void validateEntity(T t) {
-        if (Objects.isNull(t)) {
-            throw new ValidateException("Объект типа " + Entity.class.getSimpleName() + " не инициализирован");
-        }
-        Class<? extends Entity> clazz = t.getClass();
-        if (clazz == Item.class) {
-            new ItemValidator().runValidation((Item) t);
-        } else if (clazz == User.class) {
-            new UserValidator().runValidation((User) t);
-        } else if (clazz == UserDto.class) {
-            //--
-        }
     }
 
     public static void validateId(@NotNull CrudStorage<?> storage, Long id) {

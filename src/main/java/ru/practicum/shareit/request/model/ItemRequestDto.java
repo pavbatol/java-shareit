@@ -3,8 +3,8 @@ package ru.practicum.shareit.request.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import ru.practicum.shareit.common.Entity;
+import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -31,7 +31,7 @@ public class ItemRequestDto implements Entity {
     private String description;
 
     @NotNull
-    private Long requester;
+    private UserDto requester;
 
     @NotNull
     private LocalDateTime created;

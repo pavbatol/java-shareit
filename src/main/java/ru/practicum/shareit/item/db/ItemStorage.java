@@ -9,5 +9,5 @@ public interface ItemStorage extends CrudStorage<Item> {
 
     List<Item> findAllByUserId(Long userId);
 
-    List<Item> search(String text);
+    List<Item> searchByNameOrDescription(String text);
 }

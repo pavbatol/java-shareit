@@ -5,7 +5,7 @@ import ru.practicum.shareit.exeption.NotFoundException;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.practicum.shareit.validator.impl.ValidatorManager.getNonNullObject;
+import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
 public interface CrudStorage<T> {
     T add(T t);

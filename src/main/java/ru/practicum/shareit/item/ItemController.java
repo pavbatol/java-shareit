@@ -51,8 +51,8 @@ public class ItemController {
     }
 
     @GetMapping("/search") //?text={text}
-    @Operation(summary = "search")
-    public List<ItemDto> search(@RequestParam(value = "text", required = true) String text) {
-        return itemService.search(text);
+    @Operation(summary = "searchByNameOrDescription")
+    public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text", required = true) String text) {
+        return itemService.searchByNameOrDescription(text);
     }
 }

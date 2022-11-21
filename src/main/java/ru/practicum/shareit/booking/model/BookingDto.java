@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.common.Entity;
+import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -21,10 +23,10 @@ public class BookingDto implements Entity {
     private Long id;
 
     @NotNull
-    private Long booker;
+    private UserDto booker;
 
     @NotNull
-    private Long item;
+    private ItemDto item;
 
     @NotNull
     private LocalDate start;
