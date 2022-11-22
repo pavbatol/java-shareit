@@ -6,7 +6,6 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 
 @Repository("inMemoryItemStorage")
@@ -31,9 +30,7 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item remove(Long id) {
-        Item item = getNonNullObject(this, id);
-        items.remove(id);
-        return item;
+        return items.remove(id);
     }
 
     @Override
@@ -54,7 +51,7 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public List<Item> findAllByUserId(Long userId) {
         return items.values().stream()
-                .filter(item -> Objects.equals(item.getOwnerId(), userId))
+                .filter(item -> Objects.equals(item.getOwner().getId(), userId))
                 .collect(Collectors.toList());
     }
 

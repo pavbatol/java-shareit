@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotNull;
 
@@ -27,20 +28,20 @@ public final class ItemMapper {
                 .description(itemDto.getDescription() == null ? targetItem.getDescription() : itemDto.getDescription())
                 .available(itemDto.getAvailable() == null ? targetItem.getAvailable() : itemDto.getAvailable())
                 .requestId(targetItem.getRequestId())
-                .ownerId(targetItem.getOwnerId())
+                .owner(targetItem.getOwner())
                 .build();
 
     }
 
     @NotNull
-    public static Item toItem(@NotNull ItemDto itemDto, long ownerId) {
+    public static Item toItem(@NotNull ItemDto itemDto, User owner) {
         return Item.builder()
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .requestId(null)
-                .ownerId(ownerId)
+                .owner(owner)
                 .build();
 
     }

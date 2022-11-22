@@ -50,9 +50,9 @@ public class ItemController {
         return itemService.findAllByUserId(userId);
     }
 
-    @GetMapping("/search") //?text={text}
+    @GetMapping("/search")
     @Operation(summary = "searchByNameOrDescription")
-    public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text", required = true) String text) {
+    public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text") String text) {
         return itemService.searchByNameOrDescription(text);
     }
 }

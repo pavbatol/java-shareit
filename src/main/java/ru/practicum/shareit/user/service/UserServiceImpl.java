@@ -22,7 +22,7 @@ import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    protected static final String ENTITY_SIMPLE_NAME = "Пользователь";
+    protected static final String ENTITY_SIMPLE_NAME = "User";
 
     private final UserStorage userStorage;
 
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     public UserDto add(@NotNull UserDto userDto) {
         checkDuplicatedEmail(userStorage, userDto.getEmail(), null);
         User added = userStorage.add(toUser(userDto));
-        log.debug("Добавлен {}: {}", ENTITY_SIMPLE_NAME, added);
+        log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, added);
         return toUserDto(added);
     }
 
@@ -38,28 +38,28 @@ public class UserServiceImpl implements UserService {
     public UserDto update(@NotNull UserDto userDto, Long id) {
         checkDuplicatedEmail(userStorage, userDto.getEmail(), userDto.getId());
         User updated = userStorage.update(toUser(userDto, getNonNullObject(userStorage, id)));
-        log.debug("Обновлен {}: {}", ENTITY_SIMPLE_NAME, updated);
+        log.debug("Updated {}: {}", ENTITY_SIMPLE_NAME, updated);
         return toUserDto(updated);
     }
 
     @Override
     public UserDto remove(Long id) {
         User removed = userStorage.remove(id);
-        log.debug("Удален {}: {}", ENTITY_SIMPLE_NAME, removed);
+        log.debug("Removed {}: {}", ENTITY_SIMPLE_NAME, removed);
         return toUserDto(removed);
     }
 
     @Override
     public List<UserDto> findAll() {
         List<User> found = userStorage.findAll();
-        log.debug("Текущий размер списка для {}: {}", ENTITY_SIMPLE_NAME, found.size());
+        log.debug("ТThe current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         return found.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     @Override
     public UserDto findById(Long id) {
         User found = getNonNullObject(userStorage, id);
-        log.debug("Найден {}: {}", ENTITY_SIMPLE_NAME, found);
+        log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
         return toUserDto(found);
     }
 }

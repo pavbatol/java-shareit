@@ -25,40 +25,40 @@ import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    protected static final String ENTITY_SIMPLE_NAME = "Вещь";
+    protected static final String ENTITY_SIMPLE_NAME = "Thing";
     private final ItemStorage itemStorage;
     private final UserStorage userStorage;
 
     @Override
     public ItemDto add(ItemDto itemDto, Long userId) {
         validateId(userStorage, userId);
-        Item added = itemStorage.add(toItem(itemDto, userId));
-        log.debug("Добавлен {}: {}", ENTITY_SIMPLE_NAME, added);
+        Item added = itemStorage.add(toItem(itemDto, getNonNullObject(userStorage, userId)));
+        log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, added);
         return toItemDto(added);
     }
 
     @Override
     public ItemDto update(ItemDto itemDto, Long itemId, Long userId) {
         Item orig = getNonNullObject(itemStorage, itemId);
-        if (!Objects.equals(orig.getOwnerId(), userId)) {
-            throw new NotFoundException("Редактировать может только владелец");
+        if (!Objects.equals(orig.getOwner().getId(), userId)) {
+            throw new NotFoundException("Only owner can edit");
         }
         Item updated = itemStorage.update(toItem(itemDto, orig));
-        log.debug("Обновлен {}: {}", ENTITY_SIMPLE_NAME, updated);
+        log.debug("Updated {}: {}", ENTITY_SIMPLE_NAME, updated);
         return toItemDto(updated);
     }
 
     @Override
     public List<ItemDto> findAllByUserId(Long userId) {
         List<Item> found = itemStorage.findAllByUserId(userId);
-        log.debug("Текущий размер списка для {}: {}", ENTITY_SIMPLE_NAME, found.size());
+        log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         return found.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
     }
 
     @Override
     public ItemDto findById(Long itemId) {
         Item found = getNonNullObject(itemStorage, itemId);
-        log.debug("Найден {}: {}", ENTITY_SIMPLE_NAME, found);
+        log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
         return toItemDto(found);
     }
 

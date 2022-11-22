@@ -34,25 +34,25 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     protected ResponseEntity<Object> handleNotFoundEx(RuntimeException ex, WebRequest request) {
-        String message = "Объект не найден";
+        String message = "Object not found";
         return getResponseEntity(message, ex, NOT_FOUND, request);
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
     protected ResponseEntity<Object> handleAlreadyExistsEx(RuntimeException ex, WebRequest request) {
-        String message = "Уже существует";
+        String message = "Already exists";
         return getResponseEntity(message, ex, CONFLICT, request);
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
     protected ResponseEntity<Object> handleIncorrectParameterEx(RuntimeException ex, WebRequest request) {
-        String message = "Недопустимое значение параметра";
+        String message = "Invalid parameter value";
         return getResponseEntity(message, ex, BAD_REQUEST, request);
     }
 
     @ExceptionHandler({ValidateException.class, ConstraintViolationException.class})
     protected ResponseEntity<Object> handleValidateEx(RuntimeException ex, WebRequest request) {
-        String message = "Некорректные данные";
+        String message = "Incorrect data";
         return getResponseEntity(message, ex, BAD_REQUEST, request);
     }
 
@@ -62,7 +62,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull HttpHeaders headers,
                                                                   @NonNull HttpStatus status,
                                                                   @NonNull WebRequest request) {
-        String message = "Некорректные данные";
+        String message = "Incorrect data";
         return getResponseEntity(message, ex, status, request);
     }
 
@@ -72,7 +72,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull HttpHeaders headers,
                                                                   @NonNull HttpStatus status,
                                                                   @NonNull WebRequest request) {
-        String message = "Нечитаемый JSON";
+        String message = "Unreadable JSON";
         return getResponseEntity(message, ex, status, request);
     }
 
@@ -82,13 +82,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                    @NonNull HttpHeaders headers,
                                                                    @NonNull HttpStatus status,
                                                                    @NonNull WebRequest request) {
-        String message = "Обработчик для энд-поинта не найден";
+        String message = "The handler for the endpoint was not found";
         return getResponseEntity(message, ex, status, request);
     }
 
     @ExceptionHandler
     protected ResponseEntity<Object> handleThrowableEx(Throwable ex, WebRequest request) {
-        String message = "Непредвиденная ошибка";
+        String message = "Unexpected error";
         return getResponseEntity(message, ex, INTERNAL_SERVER_ERROR, request);
     }
 

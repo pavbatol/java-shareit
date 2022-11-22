@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.practicum.shareit.common.Entity;
+import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -36,7 +37,7 @@ public class Item implements Entity {
     private Long requestId;
 
     @NotNull
-    private Long ownerId;
+    private User owner;
 }
 
 

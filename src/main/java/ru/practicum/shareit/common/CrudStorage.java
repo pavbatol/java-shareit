@@ -1,11 +1,7 @@
 package ru.practicum.shareit.common;
 
-import ru.practicum.shareit.exeption.NotFoundException;
-
 import java.util.List;
 import java.util.Optional;
-
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
 public interface CrudStorage<T> {
     T add(T t);
@@ -18,12 +14,5 @@ public interface CrudStorage<T> {
 
     List<T> findAll();
 
-    default boolean contains(Long id) {
-        try {
-            getNonNullObject(this, id);
-            return true;
-        } catch (NotFoundException e) {
-            return false;
-        }
-    }
+    boolean contains(Long id);
 }
