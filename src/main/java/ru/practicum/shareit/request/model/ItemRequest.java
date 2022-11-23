@@ -3,7 +3,6 @@ package ru.practicum.shareit.request.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.practicum.shareit.common.Entity;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotBlank;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ItemRequest implements Entity {
+public class ItemRequest {
 
     @EqualsAndHashCode.Include
     private Long id;

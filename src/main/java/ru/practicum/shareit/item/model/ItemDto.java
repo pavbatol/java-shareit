@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import ru.practicum.shareit.common.Entity;
 import ru.practicum.shareit.common.OnAdd;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +16,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class ItemDto implements Entity {
+public class ItemDto {
 
     @EqualsAndHashCode.Include
     private Long id;

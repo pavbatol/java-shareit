@@ -6,8 +6,6 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.validator.ValidatorManager.validateId;
-
 @Repository("inMemoryItemStorage")
 public class InMemoryItemStorage implements ItemStorage {
 
@@ -23,7 +21,6 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public Item update(Item item) {
-        validateId(this, item, null);
         items.put(item.getId(), item);
         return item;
     }
@@ -41,11 +38,6 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public List<Item> findAll() {
         return new ArrayList<>(items.values());
-    }
-
-    @Override
-    public boolean contains(Long id) {
-        return items.containsKey(id);
     }
 
     @Override

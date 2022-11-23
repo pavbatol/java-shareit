@@ -6,9 +6,6 @@ import ru.practicum.shareit.user.model.User;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.ValidatorManager.validateId;
-
 @Repository("inMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
 
@@ -24,17 +21,13 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(@NotNull User user) {
-        validateId(this, user, null);
-        String email = getNonNullObject(this, user.getId()).getEmail();
         users.put(user.getId(), user);
         return user;
     }
 
     @Override
     public User remove(Long id) {
-        User user = getNonNullObject(this, id);
-        users.remove(id);
-        return user;
+        return users.remove(id);
     }
 
     @Override
@@ -45,11 +38,6 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public List<User> findAll() {
         return new ArrayList<>(users.values());
-    }
-
-    @Override
-    public boolean contains(Long id) {
-        return users.containsKey(id);
     }
 
     @Override

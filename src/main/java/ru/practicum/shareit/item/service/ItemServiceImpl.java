@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.item.ItemMapper.toItem;
 import static ru.practicum.shareit.item.ItemMapper.toItemDto;
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
-import static ru.practicum.shareit.validator.ValidatorManager.validateId;
 
 @Slf4j
 @Service
@@ -31,7 +30,6 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto add(ItemDto itemDto, Long userId) {
-        validateId(userStorage, userId);
         Item added = itemStorage.add(toItem(itemDto, getNonNullObject(userStorage, userId)));
         log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, added);
         return toItemDto(added);

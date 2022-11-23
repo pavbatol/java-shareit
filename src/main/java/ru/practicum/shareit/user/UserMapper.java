@@ -9,9 +9,6 @@ import javax.validation.constraints.NotNull;
 @Validated
 public final class UserMapper {
 
-    private UserMapper() {
-    }
-
     @NotNull
     public static UserDto toUserDto(@NotNull User user) {
         return UserDto.builder()

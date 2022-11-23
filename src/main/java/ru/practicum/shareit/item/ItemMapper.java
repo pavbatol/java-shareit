@@ -8,9 +8,6 @@ import javax.validation.constraints.NotNull;
 
 public final class ItemMapper {
 
-    private ItemMapper() {
-    }
-
     public static ItemDto toItemDto(Item item) {
         return ItemDto.builder()
                 .id(item.getId())
