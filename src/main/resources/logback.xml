@@ -8,8 +8,8 @@
         <file>log.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan}
-                : %m%n%wEx
+                %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID:- }){magenta} %clr([%15.15t]){faint}
+                %clr(%-40.40logger{39}){cyan} : %m%n%wEx
             </Pattern>
         </encoder>
     </appender>
