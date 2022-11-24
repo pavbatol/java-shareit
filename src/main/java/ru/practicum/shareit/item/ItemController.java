@@ -20,13 +20,15 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
+    private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
+
     private final ItemService itemService;
 
     @PostMapping
     @Validated(OnAdd.class)
     @Operation(summary = "add")
     public ItemDto add(@Valid @RequestBody ItemDto itemDto,
-                       @RequestHeader("X-Sharer-User-Id") Long userId) {
+                       @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.add(itemDto, userId);
     }
 
@@ -34,7 +36,7 @@ public class ItemController {
     @Operation(summary = "update")
     public ItemDto update(@Valid @RequestBody ItemDto itemDto,
                           @PathVariable(value = "itemId") Long itemId,
-                          @RequestHeader("X-Sharer-User-Id") Long userId) {
+                          @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.update(itemDto, itemId, userId);
     }
 
@@ -46,7 +48,7 @@ public class ItemController {
 
     @GetMapping
     @Operation(summary = "findAllByUserId")
-    public List<ItemDto> findAllByUserId(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.findAllByUserId(userId);
     }
 

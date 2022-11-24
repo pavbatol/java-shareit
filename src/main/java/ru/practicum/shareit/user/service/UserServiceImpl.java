@@ -35,16 +35,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(@NotNull UserDto userDto, Long id) {
+    public UserDto update(@NotNull UserDto userDto, Long userId) {
         checkDuplicatedEmail(userStorage, userDto.getEmail(), userDto.getId());
-        User updated = userStorage.update(toUser(userDto, getNonNullObject(userStorage, id)));
+        User updated = userStorage.update(toUser(userDto, getNonNullObject(userStorage, userId)));
         log.debug("Updated {}: {}", ENTITY_SIMPLE_NAME, updated);
         return toUserDto(updated);
     }
 
     @Override
-    public UserDto remove(Long id) {
-        User removed = userStorage.remove(id);
+    public UserDto remove(Long userId) {
+        User removed = userStorage.remove(userId);
         log.debug("Removed {}: {}", ENTITY_SIMPLE_NAME, removed);
         return toUserDto(removed);
     }
@@ -57,8 +57,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto findById(Long id) {
-        User found = getNonNullObject(userStorage, id);
+    public UserDto findById(Long userId) {
+        User found = getNonNullObject(userStorage, userId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
         return toUserDto(found);
     }

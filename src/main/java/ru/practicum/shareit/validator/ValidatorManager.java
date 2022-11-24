@@ -20,7 +20,7 @@ public final class ValidatorManager {
 
     public static void checkDuplicatedEmail(@NotNull UserStorage userStorage, String email, Long exceptUserId) {
         if (Objects.nonNull(email) && userStorage.containsEmail(email, exceptUserId)) {
-            throw new AlreadyExistsException("there is already such an email: " + email);
+            throw new AlreadyExistsException("There already exists this email: " + email);
         }
     }
 }

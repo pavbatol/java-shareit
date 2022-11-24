@@ -32,14 +32,14 @@ public class UserController {
     @PatchMapping("/{userId}")
     @Operation(summary = "update")
     public UserDto update(@Valid @RequestBody UserDto userDto,
-                          @PathVariable(value = "userId") Long id) {
-        return userService.update(userDto, id);
+                          @PathVariable(value = "userId") Long userId) {
+        return userService.update(userDto, userId);
     }
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "remove")
-    public UserDto remove(@PathVariable(value = "userId") Long id) {
-        return userService.remove(id);
+    public UserDto remove(@PathVariable(value = "userId") Long userId) {
+        return userService.remove(userId);
     }
 
     @GetMapping
@@ -50,7 +50,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     @Operation(summary = "findById")
-    public UserDto findById(@PathVariable(value = "userId") Long id) {
-        return userService.findById(id);
+    public UserDto findById(@PathVariable(value = "userId") Long userId) {
+        return userService.findById(userId);
     }
 }
