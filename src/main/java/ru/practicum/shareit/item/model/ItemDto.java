@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.common.OnAdd;
 
 import javax.validation.constraints.NotBlank;
@@ -12,22 +13,21 @@ import javax.validation.constraints.Size;
  */
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ItemDto {
 
     @EqualsAndHashCode.Include
-    private Long id;
+    Long id;
 
     @NotBlank(groups = OnAdd.class)
-    private String name;
+    String name;
 
     @NotBlank(groups = OnAdd.class)
     @Size(max = 200)
-    private String description;
+    String description;
 
     @NotNull(groups = OnAdd.class)
-    private Boolean available;
+    Boolean available;
 }

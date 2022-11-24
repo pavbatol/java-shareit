@@ -1,12 +1,13 @@
 package ru.practicum.shareit.booking.model;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 /**
@@ -15,24 +16,20 @@ import java.time.LocalDate;
 
 @Data
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Booking {
 
     @EqualsAndHashCode.Include
-    private Long id;
+    Long id;
 
-    @NotNull
-    private User booker;
+    User booker;
 
-    @NotNull
-    private Item item;
+    Item item;
 
-    @NotNull
-    private LocalDate start;
+    LocalDate start;
 
-    @NotNull
-    private LocalDate end;
+    LocalDate end;
 
-    @NotNull
-    private BookingStatus status;
+    BookingStatus status;
 }

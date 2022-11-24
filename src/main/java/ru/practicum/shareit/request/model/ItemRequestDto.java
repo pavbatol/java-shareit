@@ -1,8 +1,10 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotBlank;
@@ -16,22 +18,23 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ItemRequestDto {
 
     @EqualsAndHashCode.Include
-    private Long id;
+    Long id;
 
     @NotBlank
-    private String name;
+    String name;
 
     @NotBlank
     @Size(max = 200)
-    private String description;
+    String description;
 
     @NotNull
-    private UserDto requester;
+    UserDto requester;
 
     @NotNull
-    private LocalDateTime created;
+    LocalDateTime created;
 }

@@ -19,15 +19,11 @@ public final class ItemMapper {
 
     @NotNull
     public static Item toItem(@NotNull ItemDto itemDto, @NotNull Item targetItem) {
-        return Item.builder()
-                .id(targetItem.getId())
+        return targetItem.toBuilder()
                 .name(itemDto.getName() == null ? targetItem.getName() : itemDto.getName())
                 .description(itemDto.getDescription() == null ? targetItem.getDescription() : itemDto.getDescription())
                 .available(itemDto.getAvailable() == null ? targetItem.getAvailable() : itemDto.getAvailable())
-                .requestId(targetItem.getRequestId())
-                .owner(targetItem.getOwner())
                 .build();
-
     }
 
     @NotNull
@@ -40,6 +36,5 @@ public final class ItemMapper {
                 .requestId(null)
                 .owner(owner)
                 .build();
-
     }
 }

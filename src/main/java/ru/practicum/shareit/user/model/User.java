@@ -1,32 +1,25 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import lombok.experimental.FieldDefaults;
 
 /**
  * TODO Sprint add-controllers.
  */
 
 @Data
-@Builder
-@AllArgsConstructor
+@Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @EqualsAndHashCode.Include
-    private Long id;
+    Long id;
 
-    @NotBlank
-    @Size(max = 50)
-    private String name;
+    String name;
 
-    @Email
-    @NotBlank
-    private String email;
+    String email;
 }
