@@ -9,10 +9,6 @@ public abstract class AbstractInMemoryCrudStorage<T> implements CrudStorage<T> {
     private long lastId = 0;
     protected final Map<Long, T> container = new HashMap<>();
 
-    private long generateId() {
-        return ++lastId;
-    }
-
     @Override
     public T add(T t) {
         long id = generateId();
@@ -54,14 +50,16 @@ public abstract class AbstractInMemoryCrudStorage<T> implements CrudStorage<T> {
     }
 
     protected long getObjId(T t) {
-        long id;
         try {
             Field idField = t.getClass().getDeclaredField(ID_FIELD_NAME);
             idField.setAccessible(true);
-            id = (Long) idField.get(t);
+            return (Long) idField.get(t);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("It is not possible to change the 'id' field", e);
+            throw new RuntimeException("It is not possible to get the value of the 'id' field", e);
         }
-        return id;
+    }
+
+    private long generateId() {
+        return ++lastId;
     }
 }
