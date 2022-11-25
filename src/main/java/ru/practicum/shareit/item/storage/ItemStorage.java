@@ -1,11 +1,11 @@
 package ru.practicum.shareit.item.storage;
 
-import ru.practicum.shareit.common.CrudStorage;
+import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-public interface ItemStorage extends CrudStorage<Item> {
+public interface ItemStorage extends Storage<Item> {
 
     List<Item> findAllByUserId(Long userId);
 

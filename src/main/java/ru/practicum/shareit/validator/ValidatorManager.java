@@ -1,7 +1,7 @@
 package ru.practicum.shareit.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.practicum.shareit.common.CrudStorage;
+import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.user.storage.UserStorage;
@@ -13,7 +13,7 @@ import java.util.Objects;
 public final class ValidatorManager {
 
     @NotNull
-    public static <T> T getNonNullObject(@NotNull CrudStorage<T> storage, Long id) throws NotFoundException {
+    public static <T> T getNonNullObject(@NotNull Storage<T> storage, Long id) throws NotFoundException {
         return storage.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Object by id %s not found", id)));
     }

@@ -2,14 +2,14 @@ package ru.practicum.shareit.item.storage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.common.AbstractInMemoryCrudStorage;
+import ru.practicum.shareit.common.AbstractInMemoryStorage;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository("inMemoryItemStorage")
-public class InMemoryItemStorage extends AbstractInMemoryCrudStorage<Item> implements ItemStorage {
+public class InMemoryItemStorage extends AbstractInMemoryStorage<Item> implements ItemStorage {
 
     @Override
     public List<Item> findAllByUserId(Long userId) {

@@ -3,7 +3,7 @@ package ru.practicum.shareit.common;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public abstract class AbstractInMemoryCrudStorage<T> implements CrudStorage<T> {
+public abstract class AbstractInMemoryStorage<T> implements Storage<T> {
 
     private static final String ID_FIELD_NAME = "id";
     private long lastId = 0;
