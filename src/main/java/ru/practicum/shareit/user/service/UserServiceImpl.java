@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.UserMapper;
-import ru.practicum.shareit.user.db.UserStorage;
+import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findAll() {
         List<User> found = userStorage.findAll();
-        log.debug("ТThe current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
+        log.debug("Тhe current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         return found.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 

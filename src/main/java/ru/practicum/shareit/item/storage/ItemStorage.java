@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.db;
+package ru.practicum.shareit.item.storage;
 
 import ru.practicum.shareit.common.CrudStorage;
 import ru.practicum.shareit.item.model.Item;

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.practicum.shareit.common.CrudStorage;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
-import ru.practicum.shareit.user.db.UserStorage;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;

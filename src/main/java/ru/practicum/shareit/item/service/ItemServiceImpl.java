@@ -6,10 +6,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
-import ru.practicum.shareit.item.db.ItemStorage;
+import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
-import ru.practicum.shareit.user.db.UserStorage;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.Collections;
 import java.util.List;
