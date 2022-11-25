@@ -45,7 +45,7 @@ public abstract class AbstractInMemoryStorage<T> implements Storage<T> {
             idField.setAccessible(true);
             idField.set(t, id);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("It is not possible to change the 'id' field", e);
+            throw new RuntimeException("Not possible to change the 'id' field", e);
         }
     }
 
@@ -55,7 +55,7 @@ public abstract class AbstractInMemoryStorage<T> implements Storage<T> {
             idField.setAccessible(true);
             return (Long) idField.get(t);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException("It is not possible to get the value of the 'id' field", e);
+            throw new RuntimeException("Not possible to get the value of the 'id' field", e);
         }
     }
 

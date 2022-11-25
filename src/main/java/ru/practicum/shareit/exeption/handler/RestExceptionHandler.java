@@ -18,7 +18,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
-import ru.practicum.shareit.exeption.ValidateException;
+import ru.practicum.shareit.exeption.ValidationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -50,7 +50,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponseEntity(message, ex, BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({ValidateException.class, ConstraintViolationException.class})
+    @ExceptionHandler({ValidationException.class, ConstraintViolationException.class})
     protected ResponseEntity<Object> handleValidateEx(RuntimeException ex, WebRequest request) {
         String message = "Incorrect data";
         return getResponseEntity(message, ex, BAD_REQUEST, request);
