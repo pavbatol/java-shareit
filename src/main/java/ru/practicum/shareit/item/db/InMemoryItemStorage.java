@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.db;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
@@ -49,10 +50,9 @@ public class InMemoryItemStorage implements ItemStorage {
 
     @Override
     public List<Item> searchByNameOrDescription(String text) {
-        final String searched = text.toLowerCase();
         return items.values().stream()
-                .filter(item -> item.getName().toLowerCase().contains(searched)
-                        || item.getDescription().toLowerCase().contains(searched))
+                .filter(item -> StringUtils.containsIgnoreCase(item.getName(), text)
+                        || StringUtils.containsIgnoreCase(item.getDescription(), text))
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }

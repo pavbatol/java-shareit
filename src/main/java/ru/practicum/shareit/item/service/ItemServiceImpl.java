@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.ItemMapper;
@@ -62,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchByNameOrDescription(String text) {
-        List<Item> searched = Objects.isNull(text) || text.isBlank()
+        List<Item> searched = StringUtils.isBlank(text)
                 ? Collections.emptyList()
                 : itemStorage.searchByNameOrDescription(text);
         return searched.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
