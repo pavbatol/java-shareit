@@ -1,7 +1,5 @@
-package ru.practicum.shareit.item;
+package ru.practicum.shareit.item.model;
 
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotNull;

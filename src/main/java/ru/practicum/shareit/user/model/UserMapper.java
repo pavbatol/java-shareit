@@ -1,8 +1,6 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.model;
 
 import org.springframework.validation.annotation.Validated;
-import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotNull;
 

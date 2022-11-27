@@ -3,7 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.storage.UserStorage;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.user.UserMapper.toUser;
-import static ru.practicum.shareit.user.UserMapper.toUserDto;
+import static ru.practicum.shareit.user.model.UserMapper.toUser;
+import static ru.practicum.shareit.user.model.UserMapper.toUserDto;
 import static ru.practicum.shareit.validator.ValidatorManager.checkDuplicatedEmail;
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
