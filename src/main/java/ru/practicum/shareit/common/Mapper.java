@@ -15,7 +15,5 @@ public interface Mapper<E, D> {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     E toEntity(D dto, @MappingTarget E targetEntity);
 
-    List<E> toEntities(List<D> dlos);
-
     List<D> toDtos(List<E> entities);
 }
