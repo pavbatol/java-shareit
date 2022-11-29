@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
         if (!Objects.equals(orig.getOwner().getId(), userId)) {
             throw new NotFoundException("Only owner can edit");
         }
-        Item updated = itemStorage.update(mapper.toEntity(itemDto, orig));
+        Item updated = itemStorage.update(mapper.updateEntity(itemDto, orig));
         log.debug("Updated {}: {}", ENTITY_SIMPLE_NAME, updated);
         return mapper.toDto(updated);
     }

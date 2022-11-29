@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(@NotNull UserDto userDto, Long userId) {
         checkDuplicatedEmail(userStorage, userDto.getEmail(), userDto.getId());
-        User entity = mapper.toEntity(userDto, getNonNullObject(userStorage, userId));
+        User entity = mapper.updateEntity(userDto, getNonNullObject(userStorage, userId));
         User updated = userStorage.update(entity);
         log.debug("Updated {}: {}", ENTITY_SIMPLE_NAME, updated);
         return mapper.toDto(updated);
