@@ -1,11 +1,10 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.user.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.user.model.User;
 
 /**
  * TODO Sprint add-controllers.
@@ -15,20 +14,12 @@ import ru.practicum.shareit.user.model.User;
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Item {
+public class User {
 
     @EqualsAndHashCode.Include
     Long id;
 
     String name;
 
-    String description;
-
-    Boolean available;
-
-    Long requestId;
-
-    User owner;
+    String email;
 }
-
-

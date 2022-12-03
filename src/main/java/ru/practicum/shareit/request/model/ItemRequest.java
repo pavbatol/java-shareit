@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.request.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,15 +7,17 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
+
 /**
- * TODO Sprint add-controllers.
+ * TODO Sprint add-item-requests.
  */
 
 @Data
-@Builder(toBuilder = true)
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Item {
+public class ItemRequest {
 
     @EqualsAndHashCode.Include
     Long id;
@@ -24,11 +26,7 @@ public class Item {
 
     String description;
 
-    Boolean available;
+    User requester;
 
-    Long requestId;
-
-    User owner;
+    LocalDateTime created;
 }
-
-
