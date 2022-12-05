@@ -4,11 +4,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.shareit.common.OnAdd;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
@@ -21,18 +22,16 @@ public class BookingDto {
 
     Long id;
 
-    @NotNull
     UserDto booker;
 
-    @NotNull
+    @NotNull(groups = OnAdd.class)
     ItemDto item;
 
-    @NotNull
-    LocalDate start;
+    @NotNull(groups = OnAdd.class)
+    LocalDateTime start;
 
-    @NotNull
-    LocalDate end;
+    @NotNull(groups = OnAdd.class)
+    LocalDateTime end;
 
-    @NotNull
     BookingStatus status;
 }
