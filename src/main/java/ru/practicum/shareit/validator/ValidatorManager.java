@@ -1,6 +1,7 @@
 package ru.practicum.shareit.validator;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.common.Storage;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.NotFoundException;
@@ -14,6 +15,12 @@ public final class ValidatorManager {
 
     @NotNull
     public static <T> T getNonNullObject(@NotNull Storage<T> storage, Long id) throws NotFoundException {
+        return storage.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Object by id %s not found", id)));
+    }
+
+    @NotNull
+    public static <T> T getNonNullObject(@NotNull JpaRepository<T, Long> storage, Long id) throws NotFoundException {
         return storage.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Object by id %s not found", id)));
     }
