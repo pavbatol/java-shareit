@@ -41,7 +41,7 @@ public class Item {
     Long requestId;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "owner_id", nullable = false)
     User owner;
 
     @Override
