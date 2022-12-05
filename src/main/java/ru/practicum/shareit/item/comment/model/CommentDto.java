@@ -1,4 +1,4 @@
-package ru.practicum.shareit.comment.model;
+package ru.practicum.shareit.item.comment.model;
 
 import lombok.AccessLevel;
 import lombok.Data;
@@ -8,7 +8,6 @@ import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 /**
  * A DTO for the {@link Comment} entity
