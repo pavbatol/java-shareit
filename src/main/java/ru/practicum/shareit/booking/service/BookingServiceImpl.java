@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.*;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exeption.IllegalEnumException;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
@@ -58,15 +57,76 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findAllByBookerId(Long bookerId, String byState) {
-        return null;
+    public List<BookingDto> findAllByBookerId(Long bookerId, String state) {
+        BookingState bookingState = null;
+        try {
+            bookingState = BookingState.valueOf(state);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalEnumException("Unknown state: " + state);
+        }
+        List<Booking> bookings = new ArrayList<>();
+        switch (bookingState) {
+            case ALL:
+                bookings = bookingRepository.findAllByBookerId(bookerId);
+                break;
+            case WAITING:
+            case REJECTED:
+                bookings = bookingRepository.findAllByBooker_IdAndStatus(bookerId,
+                        BookingStatus.valueOf(bookingState.name()));
+                break;
+            case PAST:
+                bookings = bookingRepository.findAllByBooker_IdAndEndIsBefore(bookerId, LocalDateTime.now());
+                break;
+            case CURRENT:
+                bookings = bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(bookerId,
+                        LocalDateTime.now(), LocalDateTime.now());
+                break;
+            case FUTURE:
+                bookings = bookingRepository.findAllByBooker_IdAndStartIsAfter(bookerId, LocalDateTime.now());
+                break;
+        }
+        if (bookings.isEmpty()) {
+            throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
+        }
+        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
+        return bookingMapper.toDtos(bookings);
     }
 
     @Override
-    public List<BookingDto> findAllByOwnerId(Long ownerId, String byState) {
-        return null;
+    public List<BookingDto> findAllByOwnerId(Long ownerId, String state) {
+        BookingState bookingState = null;
+        try {
+            bookingState = BookingState.valueOf(state);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalEnumException("Unknown state: " + state);
+        }
+        List<Booking> bookings = new ArrayList<>();
+        switch (bookingState) {
+            case ALL:
+//                bookings = bookingRepository.findAllItemBookingByItem_Owner_Id(ownerId);
+                bookings = bookingRepository.findAllByItem_Owner_Id(ownerId);
+                break;
+//            case WAITING:
+//            case REJECTED:
+//                bookings = bookingRepository.findAllByBooker_IdAndStatus(bookerId, BookingStatus.valueOf(state.name()));
+//                break;
+//            case PAST:
+//                bookings = bookingRepository.findAllByBooker_IdAndEndIsBefore(bookerId, LocalDateTime.now());
+//                break;
+//            case CURRENT:
+//                bookings = bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(bookerId,
+//                        LocalDateTime.now(), LocalDateTime.now());
+//                break;
+//            case FUTURE:
+//                bookings = bookingRepository.findAllByBooker_IdAndStartIsAfter(bookerId, LocalDateTime.now());
+//                break;
+        }
+        if (bookings.isEmpty()) {
+            throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
+        }
+        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
+        return bookingMapper.toDtos(bookings);
     }
-
 
     private void checkAvailable(@NotNull Booking booking) {
         Optional.ofNullable(booking.getItem()).ifPresentOrElse(
@@ -88,5 +148,4 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Incorrect booking date-time");
         }
     }
-
 }

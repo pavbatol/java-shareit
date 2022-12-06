@@ -6,8 +6,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.model.BookingAddDto;
 import ru.practicum.shareit.booking.model.BookingDto;
+import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.common.OnAdd;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,6 +22,7 @@ import java.util.List;
 public class BookingController {
 
     private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
+    private static final String ALL = "ALL";
 
     private final BookingService bookingService;
 
@@ -50,14 +51,14 @@ public class BookingController {
     @GetMapping
     @Operation(summary = "findAllByBookerId")
     public List<BookingDto> findAllByBookerId(@RequestHeader(X_SHARER_USER_ID) Long bookerId,
-                                              @RequestParam(value = "byState", defaultValue = "ALL") String byState) {
-        return bookingService.findAllByBookerId(bookerId, byState);
+                                              @RequestParam(value = "state", defaultValue = ALL) String state) {
+        return bookingService.findAllByBookerId(bookerId, state);
     }
 
-    @GetMapping("/bookings/owner")
+    @GetMapping("/owner")
     @Operation(summary = "findAllByOwnerId")
     public List<BookingDto> findAllByOwnerId(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
-                                             @RequestParam(value = "state", defaultValue = "ALL") String byState) {
-        return bookingService.findAllByOwnerId(ownerId, byState);
+                                             @RequestParam(value = "state", defaultValue = ALL) String state) {
+        return bookingService.findAllByOwnerId(ownerId, state);
     }
 }
