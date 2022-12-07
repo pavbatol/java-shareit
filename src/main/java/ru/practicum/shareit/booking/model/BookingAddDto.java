@@ -1,17 +1,12 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.Value;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Value
 public class BookingAddDto {
 
     @NotNull

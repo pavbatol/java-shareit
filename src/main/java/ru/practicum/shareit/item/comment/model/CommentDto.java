@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.comment.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.Value;
 import ru.practicum.shareit.common.OnAdd;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.user.model.UserDto;
@@ -12,8 +10,7 @@ import javax.validation.constraints.NotNull;
 /**
  * A DTO for the {@link Comment} entity
  */
-@Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Value
 public class CommentDto {
 
     @NotNull(groups = OnAdd.class)

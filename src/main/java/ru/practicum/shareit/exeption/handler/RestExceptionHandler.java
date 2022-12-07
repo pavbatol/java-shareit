@@ -60,10 +60,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalEnumException.class)
     public ResponseEntity<Map<String, String>> handleEnumEx(IllegalEnumException ex) {
-        return new ResponseEntity<>(Map.of(
-                "error", ex.getMessage(),
-                "emotions", "A little humor: I am shocked by the testers"),
-                HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @NonNull

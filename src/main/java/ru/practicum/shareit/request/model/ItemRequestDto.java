@@ -1,9 +1,6 @@
 package ru.practicum.shareit.request.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.Value;
 import ru.practicum.shareit.user.model.UserDto;
 
 import javax.validation.constraints.NotBlank;
@@ -15,9 +12,7 @@ import java.time.LocalDateTime;
  * TODO Sprint add-item-requests.
  */
 
-@Data
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Value
 public class ItemRequestDto {
 
     Long id;

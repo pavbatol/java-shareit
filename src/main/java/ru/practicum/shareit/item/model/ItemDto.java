@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.experimental.FieldDefaults;
+import lombok.Value;
 import ru.practicum.shareit.common.OnAdd;
 import ru.practicum.shareit.validator.annotated.NullOrNotBlank;
 
@@ -14,9 +11,7 @@ import javax.validation.constraints.Size;
  * TODO Sprint add-controllers.
  */
 
-@Data
-@Builder
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Value
 public class ItemDto {
 
     Long id;

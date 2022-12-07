@@ -26,8 +26,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto add(BookingAddDto dto, Long userId) {
-        dto.setStatus(BookingStatus.WAITING);
         Booking booking = bookingMapper.toEntityFilledRelations(dto, userId);
+        booking.setStatus(BookingStatus.WAITING);
         checkAvailable(booking);
         checkDates(booking);
         Booking saved = bookingRepository.save(booking);
