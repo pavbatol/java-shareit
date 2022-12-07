@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.model;
 
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingShortDto;
 import ru.practicum.shareit.common.Mapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -15,9 +14,6 @@ public abstract class ItemMapper implements Mapper<Item, ItemDto> {
 
     @Autowired
     protected ItemRepository itemRepository;
-
-    @Mapping(target = "owner.id", source = "userId")
-    public abstract Item toEntity(ItemDto itemDto, Long userId);
 
     public Item toEntity(ItemDto itemDto, User owner) {
         Item item = toEntity(itemDto);
