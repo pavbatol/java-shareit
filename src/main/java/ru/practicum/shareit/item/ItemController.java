@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.common.OnAdd;
+import ru.practicum.shareit.item.model.ItemBookingDto;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -42,8 +43,9 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     @Operation(summary = "findById")
-    public ItemDto findById(@PathVariable(value = "itemId") Long itemId) {
-        return itemService.findById(itemId);
+    public ItemBookingDto findById(@PathVariable(value = "itemId") Long itemId,
+                                   @RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return itemService.findById(itemId, userId);
     }
 
     @GetMapping

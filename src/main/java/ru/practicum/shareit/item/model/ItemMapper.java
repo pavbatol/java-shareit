@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.model;
 
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.practicum.shareit.booking.model.BookingDto;
+import ru.practicum.shareit.booking.model.BookingShortDto;
 import ru.practicum.shareit.common.Mapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -26,4 +28,9 @@ public abstract class ItemMapper implements Mapper<Item, ItemDto> {
     public Item toEntity(Long itemId) {
         return getNonNullObject(itemRepository, itemId);
     }
+
+    @Mapping(target = "id", source = "entity.id")
+    @Mapping(target = "lastBooking", source = "last")
+    @Mapping(target = "nextBooking", source = "next")
+    public abstract ItemBookingDto toWithBookingDto(Item entity, BookingShortDto last, BookingShortDto next);
 }

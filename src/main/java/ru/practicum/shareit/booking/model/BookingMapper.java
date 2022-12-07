@@ -21,4 +21,6 @@ public interface BookingMapper extends Mapper<Booking, BookingDto> {
     @Mapping(target = "booker.id", source = "bookerId")
     Booking toEntityFilledItem(BookingAddDto dto, Long bookerId);
 
+    @Mapping(target = "bookerId", source = "booker.id")
+    BookingShortDto toShortDto(Booking entity);
 }
