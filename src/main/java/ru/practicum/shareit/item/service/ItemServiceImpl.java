@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
@@ -57,17 +58,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findAllByUserId(Long userId) {
-        List<Item> found = itemRepository.findAllByOwnerId(userId);
+    public List<ItemBookingDto> findAllByUserId(Long userId) {
+        List<Item> found = itemRepository.findAllByOwner_IdOrderByIdAsc(userId);
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
-        return itemMapper.toDtos(found);
+        return found.stream()
+                .map(this::getWithBookingDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public ItemBookingDto findById(Long itemId, Long userId) {
         Item found = getNonNullObject(itemRepository, itemId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
-        return getWithBookingDto(found, userId);
+        if (Objects.equals(userId, found.getOwner().getId())) {
+            return getWithBookingDto(found);
+        }
+        return itemMapper.toWithBookingDto(found, null, null);
     }
 
     @Override
@@ -78,24 +84,20 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toDtos(searched);
     }
 
-    private ItemBookingDto getWithBookingDto(@NotNull Item item, Long userId) {
-        Long itemId = item.getId();
-        BookingShortDto last = null;
-        BookingShortDto next = null;
-        if (Objects.equals(userId, item.getOwner().getId())) {
-            LocalDateTime current = LocalDateTime.now();
-            List<Booking> itemBookings = bookingRepository.findByItem_Id(itemId);
+    private ItemBookingDto getWithBookingDto(@NotNull Item item) {
+        LocalDateTime current = LocalDateTime.now();
+        List<Booking> itemBookings = bookingRepository.findByItem_Id(item.getId());
 
-            last = bookingMapper.toShortDto(itemBookings.stream()
-                    .filter(booking -> booking.getEnd().isBefore(current))
-                    .max(Comparator.comparing(Booking::getEnd))
-                    .orElse(null));
+        BookingShortDto last = bookingMapper.toShortDto(itemBookings.stream()
+                .filter(booking -> booking.getEnd().isBefore(current))
+                .max(Comparator.comparing(Booking::getEnd))
+                .orElse(null));
 
-            next = bookingMapper.toShortDto(itemBookings.stream()
-                    .filter(booking -> booking.getStart().isAfter(current))
-                    .min(Comparator.comparing(Booking::getStart))
-                    .orElse(null));
-        }
+        BookingShortDto next = bookingMapper.toShortDto(itemBookings.stream()
+                .filter(booking -> booking.getStart().isAfter(current))
+                .min(Comparator.comparing(Booking::getStart))
+                .orElse(null));
+
         return itemMapper.toWithBookingDto(item, last, next);
     }
 }

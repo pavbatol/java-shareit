@@ -50,7 +50,7 @@ public class ItemController {
 
     @GetMapping
     @Operation(summary = "findAllByUserId")
-    public List<ItemDto> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+    public List<ItemBookingDto> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.findAllByUserId(userId);
     }
 
