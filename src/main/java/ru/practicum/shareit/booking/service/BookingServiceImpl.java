@@ -30,6 +30,9 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.WAITING);
         checkAvailable(booking);
         checkDates(booking);
+        if (Objects.equals(userId, dto.getItemId())) {
+            throw new NotFoundException("The owner of the item does not need to book it");
+        }
         Booking saved = bookingRepository.save(booking);
         log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, saved);
         return bookingMapper.toDto(saved);
@@ -41,6 +44,11 @@ public class BookingServiceImpl implements BookingService {
         if (!Objects.equals(userId, orig.getItem().getOwner().getId())) {
             throw new NotFoundException("Only owner of item can approve");
         }
+        if(Objects.equals(
+                approved ? BookingStatus.APPROVED : BookingStatus.REJECTED,
+                orig.getStatus())) {
+            throw new ValidationException("The status is already set: " + orig.getStatus());
+        }
         orig.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);
         Booking saved = bookingRepository.save(orig);
         return bookingMapper.toDto(saved);
@@ -51,7 +59,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = getNonNullObject(bookingRepository, bookingId);
         if (!Objects.equals(userId, booking.getItem().getOwner().getId())
                 && !Objects.equals(userId, booking.getBooker().getId())) {
-            throw new ValidationException("Only the item owner or the booker can view");
+            throw new NotFoundException("Only the item owner or the booker can view");
         }
         return bookingMapper.toDto(booking);
     }
@@ -103,23 +111,23 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (bookingState) {
             case ALL:
-//                bookings = bookingRepository.findAllItemBookingByItem_Owner_Id(ownerId);
                 bookings = bookingRepository.findAllByItem_Owner_Id(ownerId);
                 break;
-//            case WAITING:
-//            case REJECTED:
-//                bookings = bookingRepository.findAllByBooker_IdAndStatus(bookerId, BookingStatus.valueOf(state.name()));
-//                break;
-//            case PAST:
-//                bookings = bookingRepository.findAllByBooker_IdAndEndIsBefore(bookerId, LocalDateTime.now());
-//                break;
-//            case CURRENT:
-//                bookings = bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(bookerId,
-//                        LocalDateTime.now(), LocalDateTime.now());
-//                break;
-//            case FUTURE:
-//                bookings = bookingRepository.findAllByBooker_IdAndStartIsAfter(bookerId, LocalDateTime.now());
-//                break;
+            case WAITING:
+            case REJECTED:
+                bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(ownerId,
+                        BookingStatus.valueOf(bookingState.name()));
+                break;
+            case PAST:
+                bookings = bookingRepository.findAllByItem_Owner_IdAndEndIsBefore(ownerId, LocalDateTime.now());
+                break;
+            case CURRENT:
+                bookings = bookingRepository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(ownerId,
+                        LocalDateTime.now(), LocalDateTime.now());
+                break;
+            case FUTURE:
+                bookings = bookingRepository.findAllByItem_Owner_IdAndStartIsAfter(ownerId, LocalDateTime.now());
+                break;
         }
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
