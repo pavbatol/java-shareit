@@ -61,9 +61,11 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemBookingDto> findAllByUserId(Long userId) {
         List<Item> found = itemRepository.findAllByOwner_IdOrderByIdAsc(userId);
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
-        return found.stream()
-                .map(this::getWithBookingDto)
+        List<Long> itemIds = found.stream()
+                .filter(Objects::nonNull)
+                .map(Item::getId)
                 .collect(Collectors.toList());
+        return getWithBookingDtos(found, bookingRepository.findByItem_IdIn(itemIds));
     }
 
     @Override
@@ -71,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
         Item found = getNonNullObject(itemRepository, itemId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
         if (Objects.equals(userId, found.getOwner().getId())) {
-            return getWithBookingDto(found);
+            return getWithBookingDto(found, bookingRepository.findByItem_Id(itemId));
         }
         return itemMapper.toWithBookingDto(found, null, null);
     }
@@ -84,9 +86,13 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toDtos(searched);
     }
 
-    private ItemBookingDto getWithBookingDto(@NotNull Item item) {
+    private ItemBookingDto getWithBookingDto(@NotNull Item item, List<Booking> bookings) {
         LocalDateTime current = LocalDateTime.now();
-        List<Booking> itemBookings = bookingRepository.findByItem_Id(item.getId());
+
+        List<Booking> itemBookings = bookings.stream()
+                .filter(Objects::nonNull)
+                .filter(booking -> Objects.equals(booking.getItem().getId(), item.getId()))
+                .collect(Collectors.toList());
 
         BookingShortDto last = bookingMapper.toShortDto(itemBookings.stream()
                 .filter(booking -> booking.getEnd().isBefore(current))
@@ -99,5 +105,12 @@ public class ItemServiceImpl implements ItemService {
                 .orElse(null));
 
         return itemMapper.toWithBookingDto(item, last, next);
+    }
+
+    private List<ItemBookingDto> getWithBookingDtos(List<Item> items, List<Booking> bookings) {
+        return items.stream()
+                .filter(Objects::nonNull)
+                .map(item -> getWithBookingDto(item, bookings))
+                .collect(Collectors.toList());
     }
 }
