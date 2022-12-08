@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -29,11 +30,14 @@ public class Comment {
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+    Item item;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
-    private User author;
+    User author;
+
+    @Column(name = "created_time", nullable = false)
+    LocalDateTime created;
 
     @Override
     public boolean equals(Object o) {

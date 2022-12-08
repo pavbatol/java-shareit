@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.common.OnAdd;
+import ru.practicum.shareit.item.comment.model.CommentDto;
+import ru.practicum.shareit.item.comment.model.CommentShortDto;
+import ru.practicum.shareit.item.comment.service.CommentService;
 import ru.practicum.shareit.item.model.ItemBookingDto;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
@@ -24,6 +27,7 @@ public class ItemController {
     private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
     private final ItemService itemService;
+    private final CommentService commentService;
 
     @PostMapping
     @Validated(OnAdd.class)
@@ -58,5 +62,13 @@ public class ItemController {
     @Operation(summary = "searchByNameOrDescription")
     public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text") String text) {
         return itemService.searchByNameOrDescription(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @Operation(summary = "addComment")
+    public CommentShortDto addComment(@Valid @RequestBody CommentDto commentDto,
+                                      @PathVariable(value = "itemId") Long itemId,
+                                      @RequestHeader(X_SHARER_USER_ID) Long userId) {
+        return commentService.add(commentDto, itemId, userId);
     }
 }
