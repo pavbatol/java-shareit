@@ -8,7 +8,7 @@ import ru.practicum.shareit.common.OnAdd;
 import ru.practicum.shareit.item.comment.model.CommentDto;
 import ru.practicum.shareit.item.comment.model.CommentShortDto;
 import ru.practicum.shareit.item.comment.service.CommentService;
-import ru.practicum.shareit.item.model.ItemBookingDto;
+import ru.practicum.shareit.item.model.ItemResponseDto;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -47,14 +47,14 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     @Operation(summary = "findById")
-    public ItemBookingDto findById(@PathVariable(value = "itemId") Long itemId,
-                                   @RequestHeader(X_SHARER_USER_ID) Long userId) {
+    public ItemResponseDto findById(@PathVariable(value = "itemId") Long itemId,
+                                    @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.findById(itemId, userId);
     }
 
     @GetMapping
     @Operation(summary = "findAllByUserId")
-    public List<ItemBookingDto> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+    public List<ItemResponseDto> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.findAllByUserId(userId);
     }
 

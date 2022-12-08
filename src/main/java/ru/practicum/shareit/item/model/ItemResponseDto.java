@@ -9,7 +9,7 @@ import ru.practicum.shareit.item.comment.model.CommentShortDto;
 import java.util.Set;
 
 @Value
-public class ItemBookingDto {
+public class ItemResponseDto {
 
     Long id;
 

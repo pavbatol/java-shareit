@@ -28,5 +28,5 @@ public abstract class ItemMapper implements Mapper<Item, ItemDto> {
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "lastBooking", source = "last")
     @Mapping(target = "nextBooking", source = "next")
-    public abstract ItemBookingDto toWithBookingDto(Item entity, BookingShortDto last, BookingShortDto next);
+    public abstract ItemResponseDto toResponseDto(Item entity, BookingShortDto last, BookingShortDto next);
 }

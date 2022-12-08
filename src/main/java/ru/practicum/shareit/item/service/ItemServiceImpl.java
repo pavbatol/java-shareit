@@ -14,7 +14,7 @@ import ru.practicum.shareit.item.comment.model.CommentMapper;
 import ru.practicum.shareit.item.comment.model.CommentShortDto;
 import ru.practicum.shareit.item.comment.storage.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemBookingDto;
+import ru.practicum.shareit.item.model.ItemResponseDto;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -61,25 +61,25 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemBookingDto> findAllByUserId(Long userId) {
+    public List<ItemResponseDto> findAllByUserId(Long userId) {
         List<Item> found = itemRepository.findAllByOwner_IdOrderByIdAsc(userId);
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         List<Long> itemIds = found.stream()
                 .filter(Objects::nonNull)
                 .map(Item::getId)
                 .collect(Collectors.toList());
-        List<ItemBookingDto> dtos = getWithBookingDtos(found, bookingRepository.findByItem_IdIn(itemIds));
+        List<ItemResponseDto> dtos = getWithBookingDtos(found, bookingRepository.findByItem_IdIn(itemIds));
         setCommentsBatch(dtos);
         return dtos;
     }
 
     @Override
-    public ItemBookingDto findById(Long itemId, Long userId) {
+    public ItemResponseDto findById(Long itemId, Long userId) {
         Item found = getNonNullObject(itemRepository, itemId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
-        ItemBookingDto dto = Objects.equals(userId, found.getOwner().getId())
+        ItemResponseDto dto = Objects.equals(userId, found.getOwner().getId())
                 ? getWithBookingDto(found, bookingRepository.findByItem_Id(itemId))
-                : itemMapper.toWithBookingDto(found, null, null);
+                : itemMapper.toResponseDto(found, null, null);
         List<Comment> itemComments = commentRepository.findByItemId(dto.getId());
         setComments(dto, itemComments);
         return dto;
@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toDtos(searched);
     }
 
-    private ItemBookingDto getWithBookingDto(@NotNull Item item, List<Booking> bookings) {
+    private ItemResponseDto getWithBookingDto(@NotNull Item item, List<Booking> bookings) {
         LocalDateTime current = LocalDateTime.now();
 
         List<Booking> itemBookings = bookings.stream()
@@ -111,30 +111,30 @@ public class ItemServiceImpl implements ItemService {
                 .min(Comparator.comparing(Booking::getStart))
                 .orElse(null));
 
-        return itemMapper.toWithBookingDto(item, last, next);
+        return itemMapper.toResponseDto(item, last, next);
     }
 
-    private List<ItemBookingDto> getWithBookingDtos(List<Item> items, List<Booking> bookings) {
+    private List<ItemResponseDto> getWithBookingDtos(List<Item> items, List<Booking> bookings) {
         return items.stream()
                 .filter(Objects::nonNull)
                 .map(item -> getWithBookingDto(item, bookings))
                 .collect(Collectors.toList());
     }
 
-    private void setComments(ItemBookingDto dto, List<Comment> itemComments) {
+    private void setComments(ItemResponseDto dto, List<Comment> itemComments) {
         List<CommentShortDto> commentShortDtos = commentMapper.toShortDtos(itemComments);
         dto.setComments(new HashSet<>(commentShortDtos));
     }
 
-    private void setCommentsBatch(List<ItemBookingDto> dtos) {
+    private void setCommentsBatch(List<ItemResponseDto> dtos) {
         List<Long> itemIds = dtos.stream()
                 .filter(Objects::nonNull)
-                .map(ItemBookingDto::getId)
+                .map(ItemResponseDto::getId)
                 .collect(Collectors.toList());
 
         List<Comment> batchComments = commentRepository.findByItemIdIn(itemIds);
 
-        for (ItemBookingDto dto : dtos) {
+        for (ItemResponseDto dto : dtos) {
             setComments(dto, getItemComments(dto.getId(), batchComments));
         }
     }
