@@ -9,6 +9,10 @@ import ru.practicum.shareit.booking.model.BookingMapper;
 import ru.practicum.shareit.booking.model.BookingShortDto;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.NotFoundException;
+import ru.practicum.shareit.item.comment.model.Comment;
+import ru.practicum.shareit.item.comment.model.CommentMapper;
+import ru.practicum.shareit.item.comment.model.CommentShortDto;
+import ru.practicum.shareit.item.comment.storage.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemBookingDto;
 import ru.practicum.shareit.item.model.ItemDto;
@@ -18,10 +22,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
@@ -35,8 +36,10 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
     private final ItemMapper itemMapper;
     private final BookingMapper bookingMapper;
+    private final CommentMapper commentMapper;
 
     @Override
     public ItemDto add(ItemDto itemDto, Long userId) {
@@ -65,17 +68,21 @@ public class ItemServiceImpl implements ItemService {
                 .filter(Objects::nonNull)
                 .map(Item::getId)
                 .collect(Collectors.toList());
-        return getWithBookingDtos(found, bookingRepository.findByItem_IdIn(itemIds));
+        List<ItemBookingDto> dtos = getWithBookingDtos(found, bookingRepository.findByItem_IdIn(itemIds));
+        setCommentsBatch(dtos);
+        return dtos;
     }
 
     @Override
     public ItemBookingDto findById(Long itemId, Long userId) {
         Item found = getNonNullObject(itemRepository, itemId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
-        if (Objects.equals(userId, found.getOwner().getId())) {
-            return getWithBookingDto(found, bookingRepository.findByItem_Id(itemId));
-        }
-        return itemMapper.toWithBookingDto(found, null, null);
+        ItemBookingDto dto = Objects.equals(userId, found.getOwner().getId())
+                ? getWithBookingDto(found, bookingRepository.findByItem_Id(itemId))
+                : itemMapper.toWithBookingDto(found, null, null);
+        List<Comment> itemComments = commentRepository.findByItemId(dto.getId());
+        setComments(dto, itemComments);
+        return dto;
     }
 
     @Override
@@ -111,6 +118,31 @@ public class ItemServiceImpl implements ItemService {
         return items.stream()
                 .filter(Objects::nonNull)
                 .map(item -> getWithBookingDto(item, bookings))
+                .collect(Collectors.toList());
+    }
+
+    private void setComments(ItemBookingDto dto, List<Comment> itemComments) {
+        List<CommentShortDto> commentShortDtos = commentMapper.toShortDtos(itemComments);
+        dto.setComments(new HashSet<>(commentShortDtos));
+    }
+
+    private void setCommentsBatch(List<ItemBookingDto> dtos) {
+        List<Long> itemIds = dtos.stream()
+                .filter(Objects::nonNull)
+                .map(ItemBookingDto::getId)
+                .collect(Collectors.toList());
+
+        List<Comment> batchComments = commentRepository.findByItemIdIn(itemIds);
+
+        for (ItemBookingDto dto : dtos) {
+            setComments(dto, getItemComments(dto.getId(), batchComments));
+        }
+    }
+
+    private List<Comment> getItemComments(Long itemId, List<Comment> batchComments) {
+        return batchComments.stream()
+                .filter(Objects::nonNull)
+                .filter(comment -> Objects.equals(comment.getItem().getId(), itemId))
                 .collect(Collectors.toList());
     }
 }
