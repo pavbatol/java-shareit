@@ -27,12 +27,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDto add(BookingAddDto dto, Long userId) {
         Booking booking = bookingMapper.toEntityFilledRelations(dto, userId);
-        booking.setStatus(BookingStatus.WAITING);
+        checkUserNotOwner(userId, booking.getItem().getOwner().getId());
         checkAvailable(booking);
         checkDates(booking);
-        if (Objects.equals(userId, dto.getItemId())) {
-            throw new NotFoundException("The owner of the item does not need to book it");
-        }
+        booking.setStatus(BookingStatus.WAITING);
         Booking saved = bookingRepository.save(booking);
         log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, saved);
         return bookingMapper.toDto(saved);
@@ -44,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
         if (!Objects.equals(userId, orig.getItem().getOwner().getId())) {
             throw new NotFoundException("Only owner of item can approve");
         }
-        if(Objects.equals(
+        if (Objects.equals(
                 approved ? BookingStatus.APPROVED : BookingStatus.REJECTED,
                 orig.getStatus())) {
             throw new ValidationException("The status is already set: " + orig.getStatus());
@@ -66,7 +64,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByBookerId(Long bookerId, String state) {
-        BookingState bookingState = null;
+        BookingState bookingState;
         try {
             bookingState = BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
@@ -102,7 +100,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state) {
-        BookingState bookingState = null;
+        BookingState bookingState;
         try {
             bookingState = BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
@@ -148,12 +146,17 @@ public class BookingServiceImpl implements BookingService {
                 });
     }
 
-    private static void checkDates(@NotNull Booking booking) {
+    private void checkDates(@NotNull Booking booking) {
         LocalDateTime start = Objects.requireNonNull(booking.getStart());
         LocalDateTime end = Objects.requireNonNull(booking.getEnd());
-        if (end.isBefore(start) || end.equals(start)
-                || start.isBefore(LocalDateTime.now())) {
+        if (end.isBefore(start) || end.equals(start) || start.isBefore(LocalDateTime.now())) {
             throw new ValidationException("Incorrect booking date-time");
+        }
+    }
+
+    private void checkUserNotOwner(Long userId, Long ownerId) {
+        if (Objects.equals(userId, ownerId)) {
+            throw new NotFoundException("The owner of the item does not need to book it");
         }
     }
 }

@@ -7,9 +7,6 @@ import ru.practicum.shareit.user.model.UserDto;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
-/**
- * A DTO for the {@link Comment} entity
- */
 @Value
 public class CommentDto {
 

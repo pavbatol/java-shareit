@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.model.BookingAddDto;
 import ru.practicum.shareit.booking.model.BookingDto;
-import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
@@ -36,8 +35,8 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     @Operation(summary = "approve")
     public BookingDto approve(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                     @PathVariable(value = "bookingId") Long bookingId,
-                                     @RequestParam(value = "approved", required = true) Boolean approved) {
+                              @PathVariable(value = "bookingId") Long bookingId,
+                              @RequestParam(value = "approved") Boolean approved) {
         return bookingService.approve(bookingId, userId, approved);
     }
 

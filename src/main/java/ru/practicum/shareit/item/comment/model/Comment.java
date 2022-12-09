@@ -33,7 +33,7 @@ public class Comment {
     Item item;
 
     @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "author_id", nullable = false)
     User author;
 
     @Column(name = "created_time", nullable = false)
