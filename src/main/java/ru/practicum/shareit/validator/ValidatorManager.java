@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public final class ValidatorManager {
 
     @NotNull
-    public static <T, ID> T getNonNullObject(@NotNull JpaRepository<T, ID> storage, ID id) throws NotFoundException {
+    public static <T, I> T getNonNullObject(@NotNull JpaRepository<T, I> storage, I id) throws NotFoundException {
         return storage.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Object by id %s not found", id)));
     }
