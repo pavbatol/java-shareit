@@ -11,27 +11,27 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByBookerId(Long userId);
 
-    List<Booking> findAllByBooker_IdAndStatus(Long userId, BookingStatus status);
+    List<Booking> findAllByBookerIdAndStatus(Long userId, BookingStatus status);
 
-    List<Booking> findAllByBooker_IdAndEndIsBefore(Long userId, LocalDateTime end);
+    List<Booking> findAllByBookerIdAndEndIsBefore(Long userId, LocalDateTime end);
 
-    List<Booking> findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(Long userId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByBookerIdAndStartIsBeforeAndEndIsAfter(Long userId, LocalDateTime start, LocalDateTime end);
 
-    List<Booking> findAllByBooker_IdAndStartIsAfter(Long userId, LocalDateTime start);
+    List<Booking> findAllByBookerIdAndStartIsAfter(Long userId, LocalDateTime start);
 
-    List<Booking> findAllByItem_Owner_Id(Long ownerId);
+    List<Booking> findAllByItemOwnerId(Long ownerId);
 
-    List<Booking> findAllByItem_Owner_IdAndStatus(Long ownerId, BookingStatus status);
+    List<Booking> findAllByItemOwnerIdAndStatus(Long ownerId, BookingStatus status);
 
-    List<Booking> findAllByItem_Owner_IdAndEndIsBefore(Long ownerId, LocalDateTime end);
+    List<Booking> findAllByItemOwnerIdAndEndIsBefore(Long ownerId, LocalDateTime end);
 
-    List<Booking> findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(Long ownerId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(Long ownerId, LocalDateTime start, LocalDateTime end);
 
-    List<Booking> findAllByItem_Owner_IdAndStartIsAfter(Long ownerId, LocalDateTime start);
+    List<Booking> findAllByItemOwnerIdAndStartIsAfter(Long ownerId, LocalDateTime start);
 
-    List<Booking> findByItem_Id(Long itemId);
+    List<Booking> findByItemId(Long itemId);
 
-    List<Booking> findByItem_IdIn(List<Long> itemIds);
+    List<Booking> findByItemIdIn(List<Long> itemIds);
 
-    List<Booking> findByItem_IdAndBooker_IdAndEndIsBeforeAndStatus(Long itemId, Long userId, LocalDateTime end, BookingStatus status);
+    List<Booking> findByItemIdAndBookerIdAndEndIsBeforeAndStatus(Long itemId, Long userId, LocalDateTime end, BookingStatus status);
 }

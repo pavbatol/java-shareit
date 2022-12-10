@@ -68,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
                 .filter(Objects::nonNull)
                 .map(Item::getId)
                 .collect(Collectors.toList());
-        List<ItemResponseDto> dtos = getResponseDtos(found, bookingRepository.findByItem_IdIn(itemIds));
+        List<ItemResponseDto> dtos = getResponseDtos(found, bookingRepository.findByItemIdIn(itemIds));
         setCommentsBatch(dtos);
         return dtos;
     }
@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
         Item found = getNonNullObject(itemRepository, itemId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
         ItemResponseDto dto = Objects.equals(userId, found.getOwner().getId())
-                ? getResponseDto(found, bookingRepository.findByItem_Id(itemId))
+                ? getResponseDto(found, bookingRepository.findByItemId(itemId))
                 : itemMapper.toResponseDto(found, null, null);
         List<Comment> itemComments = commentRepository.findByItemId(dto.getId());
         setComments(dto, itemComments);

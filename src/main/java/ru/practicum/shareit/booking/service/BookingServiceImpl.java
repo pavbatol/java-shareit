@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.*;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.common.GroupService;
 import ru.practicum.shareit.exeption.IllegalEnumException;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -23,10 +24,11 @@ public class BookingServiceImpl implements BookingService {
     protected static final String ENTITY_SIMPLE_NAME = "Booking";
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
+    private final GroupService groupService;
 
     @Override
     public BookingDto add(BookingAddDto dto, Long userId) {
-        Booking booking = bookingMapper.toEntityFilledRelations(dto, userId);
+        Booking booking = bookingMapper.toEntityFilledRelations(dto, userId, groupService);
         checkUserNotOwner(userId, booking.getItem().getOwner().getId());
         checkAvailable(booking);
         checkDates(booking);
@@ -77,18 +79,18 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case WAITING:
             case REJECTED:
-                bookings = bookingRepository.findAllByBooker_IdAndStatus(bookerId,
+                bookings = bookingRepository.findAllByBookerIdAndStatus(bookerId,
                         BookingStatus.valueOf(bookingState.name()));
                 break;
             case PAST:
-                bookings = bookingRepository.findAllByBooker_IdAndEndIsBefore(bookerId, LocalDateTime.now());
+                bookings = bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now());
                 break;
             case CURRENT:
-                bookings = bookingRepository.findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(bookerId,
+                bookings = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId,
                         LocalDateTime.now(), LocalDateTime.now());
                 break;
             case FUTURE:
-                bookings = bookingRepository.findAllByBooker_IdAndStartIsAfter(bookerId, LocalDateTime.now());
+                bookings = bookingRepository.findAllByBookerIdAndStartIsAfter(bookerId, LocalDateTime.now());
                 break;
         }
         if (bookings.isEmpty()) {
@@ -109,22 +111,22 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> bookings = new ArrayList<>();
         switch (bookingState) {
             case ALL:
-                bookings = bookingRepository.findAllByItem_Owner_Id(ownerId);
+                bookings = bookingRepository.findAllByItemOwnerId(ownerId);
                 break;
             case WAITING:
             case REJECTED:
-                bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(ownerId,
+                bookings = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId,
                         BookingStatus.valueOf(bookingState.name()));
                 break;
             case PAST:
-                bookings = bookingRepository.findAllByItem_Owner_IdAndEndIsBefore(ownerId, LocalDateTime.now());
+                bookings = bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now());
                 break;
             case CURRENT:
-                bookings = bookingRepository.findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(ownerId,
+                bookings = bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId,
                         LocalDateTime.now(), LocalDateTime.now());
                 break;
             case FUTURE:
-                bookings = bookingRepository.findAllByItem_Owner_IdAndStartIsAfter(ownerId, LocalDateTime.now());
+                bookings = bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now());
                 break;
         }
         if (bookings.isEmpty()) {
