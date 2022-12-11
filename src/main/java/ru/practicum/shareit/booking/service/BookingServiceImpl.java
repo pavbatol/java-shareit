@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.*;
+import ru.practicum.shareit.booking.model.enums.BookingStateFarm;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.common.GroupService;
-import ru.practicum.shareit.exeption.IllegalEnumException;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
+import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -24,11 +26,12 @@ public class BookingServiceImpl implements BookingService {
     protected static final String ENTITY_SIMPLE_NAME = "Booking";
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
-    private final GroupService groupService;
+    private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Override
-    public BookingDto add(BookingAddDto dto, Long userId) {
-        Booking booking = bookingMapper.toEntityFilledRelations(dto, userId, groupService);
+    public BookingDto add(BookingDtoAdd dto, Long userId) {
+        Booking booking = bookingMapper.toEntityFilledRelations(dto, userId, userRepository, itemRepository);
         checkUserNotOwner(userId, booking.getItem().getOwner().getId());
         checkAvailable(booking);
         checkDates(booking);
@@ -66,33 +69,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByBookerId(Long bookerId, String state) {
-        BookingState bookingState;
-        try {
-            bookingState = BookingState.valueOf(state);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalEnumException("Unknown state: " + state);
-        }
-        List<Booking> bookings = new ArrayList<>();
-        switch (bookingState) {
-            case ALL:
-                bookings = bookingRepository.findAllByBookerId(bookerId);
-                break;
-            case WAITING:
-            case REJECTED:
-                bookings = bookingRepository.findAllByBookerIdAndStatus(bookerId,
-                        BookingStatus.valueOf(bookingState.name()));
-                break;
-            case PAST:
-                bookings = bookingRepository.findAllByBookerIdAndEndIsBefore(bookerId, LocalDateTime.now());
-                break;
-            case CURRENT:
-                bookings = bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfter(bookerId,
-                        LocalDateTime.now(), LocalDateTime.now());
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findAllByBookerIdAndStartIsAfter(bookerId, LocalDateTime.now());
-                break;
-        }
+        BookingStateFarm farm = BookingStateFarm.getFarm(bookingRepository, bookerId);
+        List<Booking> bookings = farm.getBookingsByState(state, true);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
         }
@@ -102,33 +80,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state) {
-        BookingState bookingState;
-        try {
-            bookingState = BookingState.valueOf(state);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalEnumException("Unknown state: " + state);
-        }
-        List<Booking> bookings = new ArrayList<>();
-        switch (bookingState) {
-            case ALL:
-                bookings = bookingRepository.findAllByItemOwnerId(ownerId);
-                break;
-            case WAITING:
-            case REJECTED:
-                bookings = bookingRepository.findAllByItemOwnerIdAndStatus(ownerId,
-                        BookingStatus.valueOf(bookingState.name()));
-                break;
-            case PAST:
-                bookings = bookingRepository.findAllByItemOwnerIdAndEndIsBefore(ownerId, LocalDateTime.now());
-                break;
-            case CURRENT:
-                bookings = bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfter(ownerId,
-                        LocalDateTime.now(), LocalDateTime.now());
-                break;
-            case FUTURE:
-                bookings = bookingRepository.findAllByItemOwnerIdAndStartIsAfter(ownerId, LocalDateTime.now());
-                break;
-        }
+        BookingStateFarm farm = BookingStateFarm.getFarm(bookingRepository, ownerId);
+        List<Booking> bookings = farm.getBookingsByState(state, false);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
         }

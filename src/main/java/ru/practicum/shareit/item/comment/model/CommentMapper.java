@@ -3,32 +3,32 @@ package ru.practicum.shareit.item.comment.model;
 import org.mapstruct.Context;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import ru.practicum.shareit.common.GroupService;
 import ru.practicum.shareit.common.Mapper;
-import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserMapper;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@org.mapstruct.Mapper(componentModel = "spring", uses = {UserMapper.class, ItemMapper.class})
+import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
+
+@org.mapstruct.Mapper(componentModel = "spring")
 public interface CommentMapper extends Mapper<Comment, CommentDto> {
 
     @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "item.id", source = "itemId")
-    @Mapping(target = "author", source = "authorId", qualifiedByName = "userDyTd")
+    @Mapping(target = "author", source = "authorId", qualifiedByName = "userById")
     @Mapping(target = "created", source = "created")
     Comment toEntityFilledAuthor(CommentDto dto, Long itemId, Long authorId, LocalDateTime created,
-                                 @Context GroupService groupService);
+                                 @Context UserRepository userRepository);
 
-    @Named("userDyTd")
-    default User setUser(Long id, @Context GroupService groupService) {
-        return groupService.getUser(id);
+    @Named("userById")
+    default User idToUser(Long id, @Context UserRepository userRepository) {
+        return getNonNullObject(userRepository, id);
     }
 
     @Mapping(target = "authorName", source = "author.name")
-    CommentShortDto toShortDto(Comment entity);
+    CommentDtoShort toShortDto(Comment entity);
 
-    List<CommentShortDto> toShortDtos(List<Comment> entities);
+    List<CommentDtoShort> toShortDtos(List<Comment> entities);
 }

@@ -3,13 +3,13 @@ package ru.practicum.shareit.item.model;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
-import ru.practicum.shareit.booking.model.BookingShortDto;
-import ru.practicum.shareit.item.comment.model.CommentShortDto;
+import ru.practicum.shareit.booking.model.BookingDtoShort;
+import ru.practicum.shareit.item.comment.model.CommentDtoShort;
 
 import java.util.Set;
 
 @Value
-public class ItemResponseDto {
+public class ItemDtoResponse {
 
     Long id;
 
@@ -21,13 +21,13 @@ public class ItemResponseDto {
 
     @NonFinal
     @Setter
-    BookingShortDto lastBooking;
+    BookingDtoShort lastBooking;
 
     @NonFinal
     @Setter
-    BookingShortDto nextBooking;
+    BookingDtoShort nextBooking;
 
     @NonFinal
     @Setter
-    Set<CommentShortDto> comments;
+    Set<CommentDtoShort> comments;
 }

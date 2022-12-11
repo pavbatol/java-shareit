@@ -5,7 +5,7 @@ import lombok.Value;
 import java.time.LocalDateTime;
 
 @Value
-public class CommentShortDto {
+public class CommentDtoShort {
 
     Long id;
 

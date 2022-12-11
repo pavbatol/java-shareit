@@ -6,9 +6,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.common.OnAdd;
 import ru.practicum.shareit.item.comment.model.CommentDto;
-import ru.practicum.shareit.item.comment.model.CommentShortDto;
+import ru.practicum.shareit.item.comment.model.CommentDtoShort;
 import ru.practicum.shareit.item.comment.service.CommentService;
-import ru.practicum.shareit.item.model.ItemResponseDto;
+import ru.practicum.shareit.item.model.ItemDtoResponse;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -47,14 +47,14 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     @Operation(summary = "findById")
-    public ItemResponseDto findById(@PathVariable(value = "itemId") Long itemId,
+    public ItemDtoResponse findById(@PathVariable(value = "itemId") Long itemId,
                                     @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.findById(itemId, userId);
     }
 
     @GetMapping
     @Operation(summary = "findAllByUserId")
-    public List<ItemResponseDto> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
+    public List<ItemDtoResponse> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.findAllByUserId(userId);
     }
 
@@ -66,7 +66,7 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     @Operation(summary = "addComment")
-    public CommentShortDto addComment(@Valid @RequestBody CommentDto commentDto,
+    public CommentDtoShort addComment(@Valid @RequestBody CommentDto commentDto,
                                       @PathVariable(value = "itemId") Long itemId,
                                       @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return commentService.add(commentDto, itemId, userId);

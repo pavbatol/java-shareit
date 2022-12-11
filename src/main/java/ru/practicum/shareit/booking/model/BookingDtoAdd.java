@@ -1,13 +1,14 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.Value;
+import ru.practicum.shareit.booking.model.enums.BookingStatus;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Value
-public class BookingAddDto {
+public class BookingDtoAdd {
 
     @NotNull
     Long itemId;

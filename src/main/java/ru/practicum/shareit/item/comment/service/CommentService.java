@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.comment.service;
 
 import ru.practicum.shareit.item.comment.model.CommentDto;
-import ru.practicum.shareit.item.comment.model.CommentShortDto;
+import ru.practicum.shareit.item.comment.model.CommentDtoShort;
 
 public interface CommentService {
-    CommentShortDto add(CommentDto commentDto, Long itemId, Long userId);
+    CommentDtoShort add(CommentDto commentDto, Long itemId, Long userId);
 }

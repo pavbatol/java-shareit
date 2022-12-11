@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.model.BookingAddDto;
+import ru.practicum.shareit.booking.model.BookingDtoAdd;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
@@ -27,7 +27,7 @@ public class BookingController {
 
     @PostMapping
     @Operation(summary = "add")
-    public BookingDto add(@Valid @RequestBody BookingAddDto dto,
+    public BookingDto add(@Valid @RequestBody BookingDtoAdd dto,
                           @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return bookingService.add(dto, userId);
     }

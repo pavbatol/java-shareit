@@ -6,15 +6,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
-import ru.practicum.shareit.booking.model.BookingShortDto;
+import ru.practicum.shareit.booking.model.BookingDtoShort;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.item.comment.model.Comment;
 import ru.practicum.shareit.item.comment.model.CommentMapper;
-import ru.practicum.shareit.item.comment.model.CommentShortDto;
+import ru.practicum.shareit.item.comment.model.CommentDtoShort;
 import ru.practicum.shareit.item.comment.storage.CommentRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemResponseDto;
+import ru.practicum.shareit.item.model.ItemDtoResponse;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -61,23 +61,23 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> findAllByUserId(Long userId) {
+    public List<ItemDtoResponse> findAllByUserId(Long userId) {
         List<Item> found = itemRepository.findAllByOwner_IdOrderByIdAsc(userId);
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         List<Long> itemIds = found.stream()
                 .filter(Objects::nonNull)
                 .map(Item::getId)
                 .collect(Collectors.toList());
-        List<ItemResponseDto> dtos = getResponseDtos(found, bookingRepository.findByItemIdIn(itemIds));
+        List<ItemDtoResponse> dtos = getResponseDtos(found, bookingRepository.findByItemIdIn(itemIds));
         setCommentsBatch(dtos);
         return dtos;
     }
 
     @Override
-    public ItemResponseDto findById(Long itemId, Long userId) {
+    public ItemDtoResponse findById(Long itemId, Long userId) {
         Item found = getNonNullObject(itemRepository, itemId);
         log.debug("Found {}: {}", ENTITY_SIMPLE_NAME, found);
-        ItemResponseDto dto = Objects.equals(userId, found.getOwner().getId())
+        ItemDtoResponse dto = Objects.equals(userId, found.getOwner().getId())
                 ? getResponseDto(found, bookingRepository.findByItemId(itemId))
                 : itemMapper.toResponseDto(found, null, null);
         List<Comment> itemComments = commentRepository.findByItemId(dto.getId());
@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toDtos(searched);
     }
 
-    private ItemResponseDto getResponseDto(@NotNull Item item, List<Booking> bookings) {
+    private ItemDtoResponse getResponseDto(@NotNull Item item, List<Booking> bookings) {
         LocalDateTime current = LocalDateTime.now();
 
         List<Booking> itemBookings = bookings.stream()
@@ -101,12 +101,12 @@ public class ItemServiceImpl implements ItemService {
                 .filter(booking -> Objects.equals(booking.getItem().getId(), item.getId()))
                 .collect(Collectors.toList());
 
-        BookingShortDto last = bookingMapper.toShortDto(itemBookings.stream()
+        BookingDtoShort last = bookingMapper.toShortDto(itemBookings.stream()
                 .filter(booking -> booking.getEnd().isBefore(current))
                 .max(Comparator.comparing(Booking::getEnd))
                 .orElse(null));
 
-        BookingShortDto next = bookingMapper.toShortDto(itemBookings.stream()
+        BookingDtoShort next = bookingMapper.toShortDto(itemBookings.stream()
                 .filter(booking -> booking.getStart().isAfter(current))
                 .min(Comparator.comparing(Booking::getStart))
                 .orElse(null));
@@ -114,22 +114,22 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toResponseDto(item, last, next);
     }
 
-    private List<ItemResponseDto> getResponseDtos(List<Item> items, List<Booking> bookings) {
+    private List<ItemDtoResponse> getResponseDtos(List<Item> items, List<Booking> bookings) {
         return items.stream()
                 .filter(Objects::nonNull)
                 .map(item -> getResponseDto(item, bookings))
                 .collect(Collectors.toList());
     }
 
-    private void setComments(ItemResponseDto dto, List<Comment> itemComments) {
-        List<CommentShortDto> commentShortDtos = commentMapper.toShortDtos(itemComments);
+    private void setComments(ItemDtoResponse dto, List<Comment> itemComments) {
+        List<CommentDtoShort> commentShortDtos = commentMapper.toShortDtos(itemComments);
         dto.setComments(new HashSet<>(commentShortDtos));
     }
 
-    private void setCommentsBatch(List<ItemResponseDto> dtos) {
+    private void setCommentsBatch(List<ItemDtoResponse> dtos) {
         List<Long> itemIds = dtos.stream()
                 .filter(Objects::nonNull)
-                .map(ItemResponseDto::getId)
+                .map(ItemDtoResponse::getId)
                 .collect(Collectors.toList());
         List<Comment> batchComments = commentRepository.findByItemIdIn(itemIds);
         dtos.forEach(dto -> setComments(dto, getItemComments(dto.getId(), batchComments)));
