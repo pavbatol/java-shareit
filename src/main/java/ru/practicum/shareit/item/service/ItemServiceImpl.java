@@ -43,8 +43,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto add(ItemDto itemDto, Long userId) {
-        Item enrichedItemDto = itemMapper.toEntity(itemDto, getNonNullObject(userRepository, userId));
-        Item added = itemRepository.save(enrichedItemDto);
+        Item item = itemMapper.toEntity(itemDto, getNonNullObject(userRepository, userId));
+        Item added = itemRepository.save(item);
         log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, added);
         return itemMapper.toDto(added);
     }

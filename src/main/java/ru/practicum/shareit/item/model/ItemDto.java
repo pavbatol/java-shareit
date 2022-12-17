@@ -28,4 +28,6 @@ public class ItemDto {
 
     @NotNull(groups = OnAdd.class)
     Boolean available;
+
+    Long requestId;
 }
