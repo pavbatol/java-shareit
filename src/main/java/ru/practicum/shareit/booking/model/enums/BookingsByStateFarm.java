@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.model.enums;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
@@ -12,8 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-@RequiredArgsConstructor
-public final class BookingStateFarm {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public final class BookingsByStateFarm {
     private final BookingRepository repository;
     private final Map<State, Function<Long, List<Booking>>> bookerFunctions = fillBookerFunctions();
     private final Map<State, Function<Long, List<Booking>>> ownerFunctions = fillOwnerFunctions();
@@ -42,7 +43,6 @@ public final class BookingStateFarm {
         );
     }
 
-    @NotNull
     public List<Booking> getBookingsByState(Long userId, State state, boolean isBooker) {
         List<Booking> bookings = isBooker
                 ? bookerFunctions.get(state).apply(userId)
@@ -53,19 +53,18 @@ public final class BookingStateFarm {
         return bookings;
     }
 
-    @NotNull
-    public List<Booking> getBookingsByState(Long userId, String stateName, boolean isBooker) {
+    public List<Booking> getBookingsByState(Long userId, @NotNull String stateName, boolean isBooker) {
         State state;
         try {
-            state = State.valueOf(stateName);
+            state = State.valueOf(stateName.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalEnumException("Unknown state: " + stateName);
         }
         return getBookingsByState(userId, state, isBooker);
     }
 
-    public static BookingStateFarm of(BookingRepository repository) {
-        return new BookingStateFarm(repository);
+    public static BookingsByStateFarm getFarm(@NotNull BookingRepository repository) {
+        return new BookingsByStateFarm(repository);
     }
 
     public enum State {

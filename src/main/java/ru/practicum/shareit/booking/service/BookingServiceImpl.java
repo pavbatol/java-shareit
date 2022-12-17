@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.*;
-import ru.practicum.shareit.booking.model.enums.BookingStateFarm;
+import ru.practicum.shareit.booking.model.enums.BookingsByStateFarm;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.NotFoundException;
@@ -69,7 +69,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByBookerId(Long bookerId, String state) {
-        BookingStateFarm farm = BookingStateFarm.of(bookingRepository);
+        BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
         List<Booking> bookings = farm.getBookingsByState(bookerId, state, true);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state) {
-        BookingStateFarm farm = BookingStateFarm.of(bookingRepository);
+        BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
         List<Booking> bookings = farm.getBookingsByState(ownerId, state, false);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
