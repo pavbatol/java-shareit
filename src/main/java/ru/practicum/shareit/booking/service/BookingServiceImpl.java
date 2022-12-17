@@ -69,8 +69,8 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByBookerId(Long bookerId, String state) {
-        BookingStateFarm farm = BookingStateFarm.getFarm(bookingRepository, bookerId);
-        List<Booking> bookings = farm.getBookingsByState(state, true);
+        BookingStateFarm farm = BookingStateFarm.of(bookingRepository);
+        List<Booking> bookings = farm.getBookingsByState(bookerId, state, true);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
         }
@@ -80,14 +80,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state) {
-        BookingStateFarm farm = BookingStateFarm.getFarm(bookingRepository, ownerId);
-        List<Booking> bookings = farm.getBookingsByState(state, false);
+        BookingStateFarm farm = BookingStateFarm.of(bookingRepository);
+        List<Booking> bookings = farm.getBookingsByState(ownerId, state, false);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
         }
         bookings.sort(Comparator.comparing(Booking::getStart).reversed());
         return bookingMapper.toDtos(bookings);
     }
+
 
     private void checkAvailable(@NotNull Booking booking) {
         Optional.ofNullable(booking.getItem()).ifPresentOrElse(

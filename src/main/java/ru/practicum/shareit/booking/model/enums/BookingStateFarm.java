@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.model.enums;
 
+import lombok.RequiredArgsConstructor;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.IllegalEnumException;
@@ -9,52 +10,43 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
-import static ru.practicum.shareit.booking.model.enums.BookingState.*;
-
+@RequiredArgsConstructor
 public final class BookingStateFarm {
     private final BookingRepository repository;
-    private final Long userId;
-    private final Map<BookingState, Supplier<List<Booking>>> bookerSuppliers;
-    private final Map<BookingState, Supplier<List<Booking>>> ownerSuppliers;
+    private final Map<State, Function<Long, List<Booking>>> bookerFunctions = fillBookerFunctions();
+    private final Map<State, Function<Long, List<Booking>>> ownerFunctions = fillOwnerFunctions();
 
-    private BookingStateFarm(BookingRepository repository, Long userId) {
-        this.repository = Objects.requireNonNull(repository);
-        this.userId = Objects.requireNonNull(userId);
-        this.bookerSuppliers = setBookingSSuppliers();
-        this.ownerSuppliers = setOwnerSSuppliers();
-    }
-
-    private Map<BookingState, Supplier<List<Booking>>> setBookingSSuppliers() {
+    private Map<State, Function<Long, List<Booking>>> fillBookerFunctions() {
         return Map.of(
-                ALL, () -> repository.findAllByBookerId(userId),
-                WAITING, () -> repository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING),
-                REJECTED, () -> repository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED),
-                PAST, () -> repository.findAllByBookerIdAndEndBefore(userId, LocalDateTime.now()),
-                CURRENT, () -> repository.findAllByBookerIdAndStartBeforeAndEndAfter(userId,
+                State.ALL, (userId) -> repository.findAllByBookerId(userId),
+                State.WAITING, (userId) -> repository.findAllByBookerIdAndStatus(userId, BookingStatus.WAITING),
+                State.REJECTED, (userId) -> repository.findAllByBookerIdAndStatus(userId, BookingStatus.REJECTED),
+                State.PAST, (userId) -> repository.findAllByBookerIdAndEndBefore(userId, LocalDateTime.now()),
+                State.CURRENT, (userId) -> repository.findAllByBookerIdAndStartBeforeAndEndAfter(userId,
                         LocalDateTime.now(), LocalDateTime.now()),
-                FUTURE, () -> repository.findAllByBookerIdAndStartAfter(userId, LocalDateTime.now())
+                State.FUTURE, (userId) -> repository.findAllByBookerIdAndStartAfter(userId, LocalDateTime.now())
         );
     }
 
-    private Map<BookingState, Supplier<List<Booking>>> setOwnerSSuppliers() {
+    private Map<State, Function<Long, List<Booking>>> fillOwnerFunctions() {
         return Map.of(
-                ALL, () -> repository.findAllByItemOwnerId(userId),
-                WAITING, () -> repository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.WAITING),
-                REJECTED, () -> repository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED),
-                PAST, () -> repository.findAllByItemOwnerIdAndEndBefore(userId, LocalDateTime.now()),
-                CURRENT, () -> repository.findAllByItemOwnerIdAndStartBeforeAndEndAfter(userId,
+                State.ALL, (userId) -> repository.findAllByItemOwnerId(userId),
+                State.WAITING, (userId) -> repository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.WAITING),
+                State.REJECTED, (userId) -> repository.findAllByItemOwnerIdAndStatus(userId, BookingStatus.REJECTED),
+                State.PAST, (userId) -> repository.findAllByItemOwnerIdAndEndBefore(userId, LocalDateTime.now()),
+                State.CURRENT, (userId) -> repository.findAllByItemOwnerIdAndStartBeforeAndEndAfter(userId,
                         LocalDateTime.now(), LocalDateTime.now()),
-                FUTURE, () -> repository.findAllByItemOwnerIdAndStartAfter(userId, LocalDateTime.now())
+                State.FUTURE, (userId) -> repository.findAllByItemOwnerIdAndStartAfter(userId, LocalDateTime.now())
         );
     }
 
     @NotNull
-    public List<Booking> getBookingsByState(BookingState state, boolean isBooker) {
+    public List<Booking> getBookingsByState(Long userId, State state, boolean isBooker) {
         List<Booking> bookings = isBooker
-                ? bookerSuppliers.get(state).get()
-                : ownerSuppliers.get(state).get();
+                ? bookerFunctions.get(state).apply(userId)
+                : ownerFunctions.get(state).apply(userId);
         if (Objects.isNull(bookings)) {
             throw new IllegalEnumException("No mapping for the state: " + state);
         }
@@ -62,18 +54,26 @@ public final class BookingStateFarm {
     }
 
     @NotNull
-    public List<Booking> getBookingsByState(String stateName, boolean isBooker) {
-        BookingState bookingState;
+    public List<Booking> getBookingsByState(Long userId, String stateName, boolean isBooker) {
+        State state;
         try {
-            bookingState = BookingState.valueOf(stateName);
+            state = State.valueOf(stateName);
         } catch (IllegalArgumentException e) {
             throw new IllegalEnumException("Unknown state: " + stateName);
         }
-        return getBookingsByState(bookingState, isBooker);
+        return getBookingsByState(userId, state, isBooker);
     }
 
-    public static BookingStateFarm getFarm(BookingRepository repository, Long userId) {
-        return new BookingStateFarm(repository, userId);
+    public static BookingStateFarm of(BookingRepository repository) {
+        return new BookingStateFarm(repository);
+    }
+
+    public enum State {
+        ALL,
+        CURRENT,
+        PAST,
+        FUTURE,
+        WAITING,
+        REJECTED
     }
 }
-
