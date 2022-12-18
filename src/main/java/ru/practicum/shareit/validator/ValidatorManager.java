@@ -15,9 +15,9 @@ public final class ValidatorManager {
                 .orElseThrow(() -> new NotFoundException(String.format("Object by id %s not found", id)));
     }
 
-    public static <T, I> void checkId(@NotNull JpaRepository<T, I> storage, I id) throws NotFoundException {
+    public static <T, I> void checkId(@NotNull JpaRepository<T, I> storage, I id, String entitySimpleName) {
         if (!storage.existsById(id)) {
-            throw new NotFoundException(String.format("Id #%s not found", id));
+            throw new NotFoundException(String.format("Id #%s not found for %s", id, entitySimpleName));
         }
     }
 }

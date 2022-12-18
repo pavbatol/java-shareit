@@ -2,6 +2,8 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDto;
@@ -37,7 +39,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> findAllByUserId(Long userId) {
-        checkId(userRepository, userId);
+        checkId(userRepository, userId, ENTITY_SIMPLE_NAME);
         List<ItemRequest> found = itemRequestRepository.findAllByRequesterId(userId);
         log.debug("The current size of the list for {}: {} for userId #{}", ENTITY_SIMPLE_NAME, found.size(), userId);
         return itemRequestMapper.toDtos(found);
@@ -45,11 +47,18 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto findById(Long requestId, Long userId) {
-        checkId(userRepository, userId);
+        checkId(userRepository, userId, ENTITY_SIMPLE_NAME);
         ItemRequest found = getNonNullObject(itemRequestRepository, requestId);
         log.debug("Found {} for id #{}: {}", ENTITY_SIMPLE_NAME, requestId, found);
         return itemRequestMapper.toDto(found);
     }
 
-
+    @Override
+    public List<ItemRequestDto> findAllByPage(Long userId, Integer from, Integer size) {
+        Sort sort = Sort.by("created").descending();
+        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        List<ItemRequest> found = itemRequestRepository.findAllByRequesterIdNot(userId, pageRequest);
+        log.debug("The current size of the page for {}: {} for userId #{}", ENTITY_SIMPLE_NAME, found.size(), userId);
+        return itemRequestMapper.toDtos(found);
+    }
 }

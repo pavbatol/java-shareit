@@ -10,9 +10,6 @@ import ru.practicum.shareit.request.service.ItemRequestService;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-item-requests.
- */
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -43,4 +40,11 @@ public class ItemRequestController {
         return requestService.findById(requestId, userId);
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "findAllByPage")
+    public List<ItemRequestDto> findAllByPage(@RequestHeader(X_SHARER_USER_ID) Long userId,
+                                              @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                              @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return requestService.findAllByPage(userId, from, size);
+    }
 }
