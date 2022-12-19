@@ -36,7 +36,7 @@ public class ItemRequest {
     String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "requester_id", nullable = false)
     User requester;
 
     @Column(nullable = false)
