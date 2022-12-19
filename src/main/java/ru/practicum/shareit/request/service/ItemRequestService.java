@@ -11,5 +11,5 @@ public interface ItemRequestService {
 
     ItemRequestDto findById(Long requestId, Long userId);
 
-    List<ItemRequestDto> findAllByPage(Long userId, Integer from, Integer size);
+    List<ItemRequestDto> findAllByPage(Long userId, int from, int size);
 }

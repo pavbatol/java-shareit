@@ -13,6 +13,8 @@ import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 /**
@@ -55,17 +57,17 @@ public class ItemController {
     @GetMapping
     @Operation(summary = "findAllByUserId")
     public List<ItemDtoResponse> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                                 @RequestParam(value = "from", defaultValue = "1") Integer from,
-                                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        return itemService.findAllByUserId(userId, from - 1, size);
+                                                 @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                 @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return itemService.findAllByUserId(userId, from, size);
     }
 
     @GetMapping("/search")
     @Operation(summary = "searchByNameOrDescription")
     public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text") String text,
-                                                   @RequestParam(value = "from", defaultValue = "1") Integer from,
-                                                   @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        return itemService.searchByNameOrDescription(text, from - 1, size);
+                                                   @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                                   @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return itemService.searchByNameOrDescription(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")

@@ -72,9 +72,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findAllByBookerId(Long bookerId, String state, int from, int size) {
         Sort sort = Sort.by("start").descending();
-        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
-        List<Booking> bookings = farm.get(bookerId, state, pageRequest, true);
+        List<Booking> bookings = farm.getForBooker(bookerId, state, pageRequest);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
         }
@@ -84,9 +84,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state, int from, int size) {
         Sort sort = Sort.by("start").descending();
-        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
-        List<Booking> bookings = farm.get(ownerId, state, pageRequest, false);
+        List<Booking> bookings = farm.getForOwner(ownerId, state, pageRequest);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
         }

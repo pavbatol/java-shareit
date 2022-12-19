@@ -54,9 +54,9 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> findAllByPage(Long userId, Integer from, Integer size) {
+    public List<ItemRequestDto> findAllByPage(Long userId, int from, int size) {
         Sort sort = Sort.by("created").descending();
-        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<ItemRequest> found = itemRequestRepository.findAllByRequesterIdNot(userId, pageRequest);
         log.debug("The current size of the page for {}: {} for userId #{}", ENTITY_SIMPLE_NAME, found.size(), userId);
         return itemRequestMapper.toDtos(found);

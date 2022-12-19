@@ -65,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDtoResponse> findAllByUserId(Long userId, int from, int size) {
         Sort sort = Sort.by("id").ascending();
-        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<Item> found = itemRepository.findAllByOwnerId(userId, pageRequest).getContent();
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         List<Long> itemIds = found.stream()
@@ -92,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> searchByNameOrDescription(String text, int from, int size) {
         Sort sort = Sort.by("id").ascending();
-        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<Item> searched = StringUtils.isBlank(text)
                 ? Collections.emptyList()
                 : itemRepository.searchByNameOrDescription(text, pageRequest).getContent();

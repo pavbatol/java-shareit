@@ -8,6 +8,8 @@ import ru.practicum.shareit.request.model.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Validated
@@ -43,8 +45,8 @@ public class ItemRequestController {
     @GetMapping("/all")
     @Operation(summary = "findAllByPage")
     public List<ItemRequestDto> findAllByPage(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                              @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                              @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                              @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                              @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return requestService.findAllByPage(userId, from, size);
     }
 }
