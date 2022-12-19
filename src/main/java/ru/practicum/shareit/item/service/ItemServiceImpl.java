@@ -3,6 +3,8 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
@@ -61,8 +63,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoResponse> findAllByUserId(Long userId) {
-        List<Item> found = itemRepository.findAllByOwner_IdOrderByIdAsc(userId);
+    public List<ItemDtoResponse> findAllByUserId(Long userId, int from, int size) {
+        Sort sort = Sort.by("id").ascending();
+        PageRequest pageRequest = PageRequest.of(from, size, sort);
+        List<Item> found = itemRepository.findAllByOwnerId(userId, pageRequest).getContent();
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         List<Long> itemIds = found.stream()
                 .filter(Objects::nonNull)
@@ -86,10 +90,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchByNameOrDescription(String text) {
+    public List<ItemDto> searchByNameOrDescription(String text, int from, int size) {
+        Sort sort = Sort.by("id").ascending();
+        PageRequest pageRequest = PageRequest.of(from, size, sort);
         List<Item> searched = StringUtils.isBlank(text)
                 ? Collections.emptyList()
-                : itemRepository.searchByNameOrDescription(text);
+                : itemRepository.searchByNameOrDescription(text, pageRequest).getContent();
         return itemMapper.toDtos(searched);
     }
 

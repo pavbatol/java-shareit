@@ -54,14 +54,18 @@ public class ItemController {
 
     @GetMapping
     @Operation(summary = "findAllByUserId")
-    public List<ItemDtoResponse> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId) {
-        return itemService.findAllByUserId(userId);
+    public List<ItemDtoResponse> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId,
+                                                 @RequestParam(value = "from", defaultValue = "1") Integer from,
+                                                 @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return itemService.findAllByUserId(userId, from - 1, size);
     }
 
     @GetMapping("/search")
     @Operation(summary = "searchByNameOrDescription")
-    public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text") String text) {
-        return itemService.searchByNameOrDescription(text);
+    public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text") String text,
+                                                   @RequestParam(value = "from", defaultValue = "1") Integer from,
+                                                   @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        return itemService.searchByNameOrDescription(text, from - 1, size);
     }
 
     @PostMapping("/{itemId}/comment")

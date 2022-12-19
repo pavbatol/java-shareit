@@ -2,6 +2,8 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.*;
 import ru.practicum.shareit.booking.model.enums.BookingsByStateFarm;
@@ -68,27 +70,28 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> findAllByBookerId(Long bookerId, String state) {
+    public List<BookingDto> findAllByBookerId(Long bookerId, String state, int from, int size) {
+        Sort sort = Sort.by("start").descending();
+        PageRequest pageRequest = PageRequest.of(from, size, sort);
         BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
-        List<Booking> bookings = farm.getBookingsByState(bookerId, state, true);
+        List<Booking> bookings = farm.get(bookerId, state, pageRequest, true);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
         }
-        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
         return bookingMapper.toDtos(bookings);
     }
 
     @Override
-    public List<BookingDto> findAllByOwnerId(Long ownerId, String state) {
+    public List<BookingDto> findAllByOwnerId(Long ownerId, String state, int from, int size) {
+        Sort sort = Sort.by("start").descending();
+        PageRequest pageRequest = PageRequest.of(from, size, sort);
         BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
-        List<Booking> bookings = farm.getBookingsByState(ownerId, state, false);
+        List<Booking> bookings = farm.get(ownerId, state, pageRequest, false);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
         }
-        bookings.sort(Comparator.comparing(Booking::getStart).reversed());
         return bookingMapper.toDtos(bookings);
     }
-
 
     private void checkAvailable(@NotNull Booking booking) {
         Optional.ofNullable(booking.getItem()).ifPresentOrElse(
