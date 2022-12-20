@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
@@ -15,13 +16,11 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -32,8 +31,8 @@ class ItemRequestServiceImplTest {
     private ItemRequestRepository requestRepository;
     @Mock
     private UserRepository userRepository;
-    @Mock
-    private ItemRequestMapper itemRequestMapper;
+
+    private final ItemRequestMapper itemRequestMapper = Mappers.getMapper(ItemRequestMapper.class);
 
     private ItemRequestService requestService;
     private final UserDto userDto1 = makeUserDto(1L);
@@ -52,10 +51,12 @@ class ItemRequestServiceImplTest {
 
     @Test
     void add_shouldInvokeRepoAndAdded() {
-        when(requestRepository.save(any())).thenAnswer(returnsFirstArg());
+        when(requestRepository.save(any())).thenAnswer(invocationOnMock -> {
+            ItemRequest request = invocationOnMock.getArgument(0, ItemRequest.class);
+            request.setCreated(null);
+            return request;
+        });
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRequestMapper.toEntity(any(), any(), any())).thenReturn(itemRequest1);
-        when(itemRequestMapper.toDto(any())).thenReturn(itemRequestDto1);
 
         ItemRequestDto added = requestService.add(itemRequestDto1, user1.getId());
 
@@ -66,10 +67,8 @@ class ItemRequestServiceImplTest {
     @Test
     void findAllByUserId_shouldInvokeRepoAndFoundAsList() {
         final ItemRequest itemRequest2 = makeItemRequest(2L, user1);
-        final ItemRequestDto itemRequestDto2 = makeItemRequestDto(2L, userDto1);
         when(userRepository.existsById(anyLong())).thenReturn(true);
         when(requestRepository.findAllByRequesterId(anyLong())).thenReturn(List.of(itemRequest1, itemRequest2));
-        when(itemRequestMapper.toDtos(any())).thenReturn(List.of(itemRequestDto1, itemRequestDto2));
 
         List<ItemRequestDto> found = requestService.findAllByUserId(100L);
 
@@ -84,7 +83,6 @@ class ItemRequestServiceImplTest {
     void findById_shouldInvokeRepoAndFound() {
         when(userRepository.existsById(anyLong())).thenReturn(true);
         when(requestRepository.findById(anyLong())).thenReturn(Optional.of(itemRequest1));
-        when(itemRequestMapper.toDto(any())).thenReturn(itemRequestDto1);
 
         ItemRequestDto found = requestService.findById(itemRequest1.getId(), user1.getId());
 
@@ -95,9 +93,7 @@ class ItemRequestServiceImplTest {
     @Test
     void findAllByPage_shouldInvokeRepoAndFound() {
         final ItemRequest itemRequest2 = makeItemRequest(2L, user1);
-        final ItemRequestDto itemRequestDto2 = makeItemRequestDto(2L, userDto1);
         when(requestRepository.findAllByRequesterIdNot(anyLong(), any())).thenReturn(List.of(itemRequest1, itemRequest2));
-        when(itemRequestMapper.toDtos(any())).thenReturn(List.of(itemRequestDto1, itemRequestDto2));
 
         List<ItemRequestDto> found = requestService.findAllByPage(user1.getId(), 1, 1);
 
@@ -118,17 +114,17 @@ class ItemRequestServiceImplTest {
     private UserDto makeUserDto(long id) {
         return new UserDto(
                 id,
-                "UserDto_name_" + id,
-                "UserDto_email_" + id + "@emal.ru"
+                "name_" + id,
+                "email_" + id + "@emal.ru"
         );
     }
 
     private ItemRequestDto makeItemRequestDto(long id, UserDto userDto) {
         return new ItemRequestDto(
                 id,
-                "ItemRequestDto_description_" + id,
+                "description_" + id,
                 userDto,
-                LocalDateTime.now(),
+                null,
                 null
         );
     }
@@ -136,9 +132,9 @@ class ItemRequestServiceImplTest {
     private ItemRequest makeItemRequest(long id, User user) {
         return new ItemRequest(
                 id,
-                "ItemRequest_description_" + id,
+                "description_" + id,
                 user,
-                LocalDateTime.now(),
+                null,
                 null
         );
     }

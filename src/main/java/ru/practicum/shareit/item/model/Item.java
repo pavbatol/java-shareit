@@ -38,8 +38,6 @@ public class Item {
     @Column(nullable = false)
     Boolean available;
 
-    //@Column(name = "request_id")
-    //Long requestId;
     @ManyToOne
     @JoinColumn(name = "request_id")
     ItemRequest request;
