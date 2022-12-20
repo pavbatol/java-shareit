@@ -193,7 +193,8 @@
 					<configuration>
 						<output>file</output>
 						<excludes>
-							<exclude>ru/practicum/shareit/**/*MapperImpl.class</exclude>
+							<exclude>**/*MapperImpl.class</exclude>
+							<exclude>**/*annotated*/*.*</exclude>
 						</excludes>
 					</configuration>
 					<executions>
