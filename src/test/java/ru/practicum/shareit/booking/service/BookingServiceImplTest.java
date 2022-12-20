@@ -1,34 +1,39 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.booking.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingDto;
+import ru.practicum.shareit.booking.model.BookingDtoAdd;
+import ru.practicum.shareit.booking.model.BookingMapper;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.model.ItemMapper;
+import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.model.UserMapper;
+import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.booking.model.enums.BookingsByStateFarm.State;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
 
@@ -39,14 +44,13 @@ class BookingServiceImplTest {
     @Mock
     private ItemRepository itemRepository;
 
-    private final BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
-//    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
-//    private final ItemMapper itemMapper = Mappers.getMapper(ItemMapper.class);
+    private final BookingMapper bookingMapper;
     private BookingServiceImpl bookingService;
     private User user1;
     private Item item1;
     private Booking booking1;
-
+    private BookingDtoAdd bookingDtoAdd1;
+    private BookingDto bookingDto1;
 
     @BeforeEach
     void setUp() {
@@ -56,42 +60,43 @@ class BookingServiceImplTest {
                 userRepository,
                 itemRepository
         );
+
         user1 = makeUser(1L);
         item1 = makeItem(1L, user1);
         booking1 = makeBooking(1L, user1, item1);
-    }
 
-
-    @Test
-    void add() {
-        BookingDtoAdd bookingDtoAdd1 = new BookingDtoAdd(
+        bookingDtoAdd1 = new BookingDtoAdd(
                 1L,
                 LocalDateTime.now().plusHours(1),
                 LocalDateTime.now().plusHours(2),
                 BookingStatus.WAITING
         );
-        BookingDto bookingDto1 = makeBookingDto(1L);
 
-        BookingMapper mockMapper = Mockito.mock(BookingMapper.class);
-        BookingServiceImpl bookingService_2 = new BookingServiceImpl(
-                bookingRepository,
-                mockMapper,
-                userRepository,
-                itemRepository
+        bookingDto1 = new BookingDto(
+                1L,
+                makeUserDto(1L),
+                makeItemDto(1L),
+                bookingDtoAdd1.getStart(),
+                bookingDtoAdd1.getEnd(),
+                bookingDtoAdd1.getStatus()
         );
-
-//        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
-//        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-//        when(bookingRepository.save(any())).thenAnswer(returnsFirstArg());
-
-        when(mockMapper.toEntityFilledRelations(any(), any(), any(), any())).thenReturn(booking1);
-        when(mockMapper.toDto(any())).thenReturn(bookingDto1);
-
-        BookingDto added = bookingService_2.add(bookingDtoAdd1, 2L);
-
-        assertEquals(bookingDto1, added);
     }
 
+    @Test
+    void add_shouldInvokeRepoAndAdded() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.save(any())).thenAnswer(invocationOnMock -> {
+            Booking booking = invocationOnMock.getArgument(0, Booking.class);
+            booking.setId(bookingDto1.getId());
+            return booking;
+        });
+
+        BookingDto added = bookingService.add(bookingDtoAdd1, 2L);
+
+        assertEquals(bookingDto1, added);
+        verify(bookingRepository, times(1)).save(any());
+    }
 
     @Test
     void approve() {
@@ -114,28 +119,6 @@ class BookingServiceImplTest {
     }
 
 
-    private Item makeItem(long id, User owner) {
-        return new Item(
-                id,
-                "Item_name_" + id,
-                "Item_description_" + id,
-                true,
-                null,
-                owner
-        );
-    }
-
-    private Booking makeBooking(long id, User user, Item item) {
-        return new Booking(
-                id,
-                user,
-                item,
-                LocalDateTime.now().plusHours(1),
-                LocalDateTime.now().plusHours(5),
-                BookingStatus.WAITING
-        );
-    }
-
     private BookingDtoAdd makeBookingDtoAdd(long id) {
         return new BookingDtoAdd(
                 id,
@@ -156,11 +139,52 @@ class BookingServiceImplTest {
         );
     }
 
+    private UserDto makeUserDto(long id) {
+        return new UserDto(
+                id,
+                "name_" + id,
+                "email_" + id + "@emal.ru"
+        );
+    }
+
+    private ItemDto makeItemDto(long id) {
+        return new ItemDto(
+                id,
+                "name_" + id,
+                "description_" + id,
+                true,
+                null
+        );
+    }
+
     User makeUser(Long id) {
         return new User(
                 id,
                 "name_" + id,
                 "email_" + id + "@emal.ru"
+        );
+    }
+
+
+    private Item makeItem(long id, User owner) {
+        return new Item(
+                id,
+                "name_" + id,
+                "description_" + id,
+                true,
+                null,
+                owner
+        );
+    }
+
+    private Booking makeBooking(long id, User user, Item item) {
+        return new Booking(
+                id,
+                user,
+                item,
+                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusHours(5),
+                BookingStatus.WAITING
         );
     }
 
