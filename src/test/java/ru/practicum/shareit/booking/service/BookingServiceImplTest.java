@@ -16,6 +16,8 @@ import ru.practicum.shareit.booking.model.BookingDtoAdd;
 import ru.practicum.shareit.booking.model.BookingMapper;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exeption.NotFoundException;
+import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -27,10 +29,13 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.booking.model.enums.BookingsByStateFarm.State;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -94,12 +99,78 @@ class BookingServiceImplTest {
 
         BookingDto added = bookingService.add(bookingDtoAdd1, 2L);
 
+        assertThat(added, isNotNull());
         assertEquals(bookingDto1, added);
         verify(bookingRepository, times(1)).save(any());
     }
 
     @Test
-    void approve() {
+    void add_shouldCheckUserNotOwnerIsFailed() {
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.add(bookingDtoAdd1, 1L));
+
+        assertEquals(exception.getMessage(), "The owner of the item does not need to book it");
+    }
+
+    @Test
+    void add_shouldCheckAvailableIsFailed() {
+        item1.setAvailable(false);
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> bookingService.add(bookingDtoAdd1, 2L));
+
+        assertEquals(exception.getMessage(), "The item is not available for booking");
+    }
+
+    @Test
+    void add_shouldCheckDatesWhenStartIsPastIsFailed() {
+        BookingDtoAdd bookingDtoAdd2 = bookingDtoAdd1.toBuilder()
+                .start(LocalDateTime.now().minusHours(1))
+                .build();
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> bookingService.add(bookingDtoAdd2, 2L));
+
+        assertEquals(exception.getMessage(), "Incorrect booking date-time");
+    }
+
+    @Test
+    void add_shouldCheckDatesWhenStartIsAfterEndIsFailed() {
+        BookingDtoAdd bookingDtoAdd2 = bookingDtoAdd1.toBuilder()
+                .start(bookingDtoAdd1.getEnd().plusHours(1))
+                .build();
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> bookingService.add(bookingDtoAdd2, 2L));
+
+        assertEquals(exception.getMessage(), "Incorrect booking date-time");
+    }
+
+    @Test
+    void add_shouldCheckDatesWhenStartIsEqualEndIsFailed() {
+        BookingDtoAdd bookingDtoAdd2 = bookingDtoAdd1.toBuilder()
+                .start(bookingDtoAdd1.getEnd())
+                .build();
+        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> bookingService.add(bookingDtoAdd2, 2L));
+
+        assertEquals(exception.getMessage(), "Incorrect booking date-time");
+    }
+
+    @Test
+    void approve_() {
     }
 
     @Test
