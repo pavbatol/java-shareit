@@ -10,6 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingDtoAdd;
@@ -26,16 +29,16 @@ import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.booking.model.enums.BookingsByStateFarm.State;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -98,8 +101,9 @@ class BookingServiceImplTest {
         });
 
         BookingDto added = bookingService.add(bookingDtoAdd1, 2L);
+        System.out.println(added);
 
-        assertThat(added, isNotNull());
+        assertNotNull(added);
         assertEquals(bookingDto1, added);
         verify(bookingRepository, times(1)).save(any());
     }
@@ -170,25 +174,201 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void approve_() {
+    void approve_shouldStatusUpdatedForTrue() {
+        boolean approved = true;
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+        when(bookingRepository.save(any())).thenAnswer(returnsFirstArg());
+
+        BookingDto updated = bookingService.approve(booking1.getId(), user1.getId(), approved);
+
+        assertEquals(BookingStatus.APPROVED, updated.getStatus());
+        verify(bookingRepository, times(1)).save(booking1);
     }
 
     @Test
-    void findById() {
+    void approve_shouldStatusUpdatedForFalse() {
+        boolean approved = false;
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+        when(bookingRepository.save(any())).thenAnswer(returnsFirstArg());
+
+        BookingDto updated = bookingService.approve(booking1.getId(), user1.getId(), approved);
+
+        assertEquals(BookingStatus.REJECTED, updated.getStatus());
+        verify(bookingRepository, times(1)).save(booking1);
+    }
+
+    @Test
+    void approve_shouldThrowsExceptionWhenUserNotOwner() {
+        boolean approved = true;
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.approve(booking1.getId(), user1.getId() + 100, approved));
+
+        assertEquals(exception.getMessage(), "Only owner of item can approve");
+    }
+
+    @Test
+    void approve_shouldThrowsExceptionWhenStatusAlreadySet() {
+        boolean approved = true;
+        booking1.setStatus(BookingStatus.APPROVED);
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+
+        ValidationException exception = assertThrows(ValidationException.class,
+                () -> bookingService.approve(booking1.getId(), user1.getId(), approved));
+
+        assertTrue(exception.getMessage().contains("The status is already set"));
+    }
+
+    @Test
+    void findById_shouldInvokeRepoAndFound() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+
+        BookingDto found = bookingService.findById(booking1.getId(), user1.getId());
+
+        assertEquals(bookingMapper.toDto(booking1), found);
+        verify(bookingRepository, times(1)).findById(booking1.getId());
+    }
+
+    @Test
+    void findById_shouldThrowsExceptionWhenUserNotOwnerAndNotBooker() {
+        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.findById(booking1.getId(), user1.getId() + 100));
+
+        assertEquals(exception.getMessage(), "Only the item owner or the booker can view");
+    }
+
+    @ParameterizedTest(name = "{index}) should found by state: {0}")
+    @EnumSource(State.class)
+    void findAllByBookerId_shouldInvokeRepo_andInvokedMethodDependsOnStateByFactory(State state) {
+        int from = 1;
+        int size = 10;
+
+        Booking booking2 = makeBooking(2, user1, item1);
+        Page<Booking> page = new PageImpl<>(List.of(booking1, booking2));
+
+        Supplier<List<BookingDto>> finder = () -> {
+            List<BookingDto> found = bookingService.findAllByBookerId(1L, state.name(), from, size);
+            assertNotNull(found);
+            assertEquals(2, found.size());
+            return found;
+        };
+
+        switch (state) {
+            case ALL:
+                when(bookingRepository.findAllByBookerId(anyLong(), any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByBookerId(anyLong(), any(Pageable.class));
+                break;
+            case WAITING:
+            case REJECTED:
+                when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(BookingStatus.class),
+                        any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1)).findAllByBookerIdAndStatus(anyLong(),
+                        any(BookingStatus.class), any(Pageable.class));
+                break;
+            case PAST:
+                when(bookingRepository.findAllByBookerIdAndEndBefore(anyLong(), any(LocalDateTime.class),
+                        any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByBookerIdAndEndBefore(anyLong(), any(LocalDateTime.class), any(Pageable.class));
+                break;
+            case CURRENT:
+                when(bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
+                        any(LocalDateTime.class), any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByBookerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
+                                any(LocalDateTime.class), any(Pageable.class));
+                break;
+            case FUTURE:
+                when(bookingRepository.findAllByBookerIdAndStartAfter(anyLong(), any(LocalDateTime.class),
+                        any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByBookerIdAndStartAfter(anyLong(), any(LocalDateTime.class), any(Pageable.class));
+                break;
+        }
+    }
+
+    @Test
+    void findAllByBookerId_shouldThrowsExceptionWhenFoundIsEmpty() {
+        when(bookingRepository.findAllByBookerId(anyLong(), any(Pageable.class))).thenReturn(Page.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.findAllByBookerId(1L, State.ALL.name(), 1, 1));
+        assertTrue(exception.getMessage().contains("not found"));
     }
 
     @ParameterizedTest(name = "{index})  should found by state: {0}")
     @EnumSource(State.class)
-    void findAllByBookerId(State state) {
-        System.out.println("ok");
+    void findAllByOwnerId_shouldInvokeRepo_andInvokedMethodDependsOnStateByFactory(State state) {
+        int from = 1;
+        int size = 10;
+
+        Booking booking2 = makeBooking(2, user1, item1);
+        Page<Booking> page = new PageImpl<>(List.of(booking1, booking2));
+
+        Supplier<List<BookingDto>> finder = () -> {
+            List<BookingDto> found = bookingService.findAllByOwnerId(1L, state.name(), from, size);
+            assertNotNull(found);
+            assertEquals(2, found.size());
+            return found;
+        };
+
+        switch (state) {
+            case ALL:
+                when(bookingRepository.findAllByItemOwnerId(anyLong(), any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByItemOwnerId(anyLong(), any(Pageable.class));
+                break;
+            case WAITING:
+            case REJECTED:
+                when(bookingRepository.findAllByItemOwnerIdAndStatus(anyLong(), any(BookingStatus.class),
+                        any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1)).findAllByItemOwnerIdAndStatus(anyLong(),
+                        any(BookingStatus.class), any(Pageable.class));
+                break;
+            case PAST:
+                when(bookingRepository.findAllByItemOwnerIdAndEndBefore(anyLong(), any(LocalDateTime.class),
+                        any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByItemOwnerIdAndEndBefore(anyLong(), any(LocalDateTime.class), any(Pageable.class));
+                break;
+            case CURRENT:
+                when(bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
+                        any(LocalDateTime.class), any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByItemOwnerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
+                                any(LocalDateTime.class), any(Pageable.class));
+                break;
+            case FUTURE:
+                when(bookingRepository.findAllByItemOwnerIdAndStartAfter(anyLong(), any(LocalDateTime.class),
+                        any(Pageable.class))).thenReturn(page);
+                finder.get();
+                verify(bookingRepository, times(1))
+                        .findAllByItemOwnerIdAndStartAfter(anyLong(), any(LocalDateTime.class), any(Pageable.class));
+                break;
+        }
     }
 
-    @ParameterizedTest(name = "{index})  should found by state: {0}")
-    @EnumSource(State.class)
-    void findAllByOwnerId(State state) {
-        System.out.println("ok");
-    }
+    @Test
+    void findAllByOwnerId_shouldThrowsExceptionWhenFoundIsEmpty() {
+        when(bookingRepository.findAllByItemOwnerId(anyLong(), any(Pageable.class))).thenReturn(Page.empty());
 
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> bookingService.findAllByOwnerId(1L, State.ALL.name(), 1, 1));
+        assertTrue(exception.getMessage().contains("not found"));
+    }
 
     private BookingDtoAdd makeBookingDtoAdd(long id) {
         return new BookingDtoAdd(
@@ -258,15 +438,4 @@ class BookingServiceImplTest {
                 BookingStatus.WAITING
         );
     }
-
-
-//    @ParameterizedTest
-//    @MethodSource("argsProviderFactory")
-//    void testWithMethodSource(String argument) {
-//        assertNotNull(argument);
-//    }
-//
-//    static Stream<String> argsProviderFactory() {
-//        return Stream.of("alex", "brian");
-//    }
 }
