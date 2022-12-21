@@ -101,7 +101,6 @@ class BookingServiceImplTest {
         });
 
         BookingDto added = bookingService.add(bookingDtoAdd1, 2L);
-        System.out.println(added);
 
         assertNotNull(added);
         assertEquals(bookingDto1, added);
