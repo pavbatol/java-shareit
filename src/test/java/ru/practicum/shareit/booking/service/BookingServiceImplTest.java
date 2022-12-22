@@ -31,7 +31,6 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
@@ -248,17 +247,16 @@ class BookingServiceImplTest {
         Booking booking2 = makeBooking(2, user1, item1);
         Page<Booking> page = new PageImpl<>(List.of(booking1, booking2));
 
-        Supplier<List<BookingDto>> finder = () -> {
+        Runnable finder = () -> {
             List<BookingDto> found = bookingService.findAllByBookerId(1L, state.name(), from, size);
             assertNotNull(found);
             assertEquals(2, found.size());
-            return found;
         };
 
         switch (state) {
             case ALL:
                 when(bookingRepository.findAllByBookerId(anyLong(), any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByBookerId(anyLong(), any(Pageable.class));
                 break;
@@ -266,21 +264,21 @@ class BookingServiceImplTest {
             case REJECTED:
                 when(bookingRepository.findAllByBookerIdAndStatus(anyLong(), any(BookingStatus.class),
                         any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1)).findAllByBookerIdAndStatus(anyLong(),
                         any(BookingStatus.class), any(Pageable.class));
                 break;
             case PAST:
                 when(bookingRepository.findAllByBookerIdAndEndBefore(anyLong(), any(LocalDateTime.class),
                         any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByBookerIdAndEndBefore(anyLong(), any(LocalDateTime.class), any(Pageable.class));
                 break;
             case CURRENT:
                 when(bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
                         any(LocalDateTime.class), any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByBookerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
                                 any(LocalDateTime.class), any(Pageable.class));
@@ -288,7 +286,7 @@ class BookingServiceImplTest {
             case FUTURE:
                 when(bookingRepository.findAllByBookerIdAndStartAfter(anyLong(), any(LocalDateTime.class),
                         any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByBookerIdAndStartAfter(anyLong(), any(LocalDateTime.class), any(Pageable.class));
                 break;
@@ -313,17 +311,16 @@ class BookingServiceImplTest {
         Booking booking2 = makeBooking(2, user1, item1);
         Page<Booking> page = new PageImpl<>(List.of(booking1, booking2));
 
-        Supplier<List<BookingDto>> finder = () -> {
+        Runnable finder = () -> {
             List<BookingDto> found = bookingService.findAllByOwnerId(1L, state.name(), from, size);
             assertNotNull(found);
             assertEquals(2, found.size());
-            return found;
         };
 
         switch (state) {
             case ALL:
                 when(bookingRepository.findAllByItemOwnerId(anyLong(), any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByItemOwnerId(anyLong(), any(Pageable.class));
                 break;
@@ -331,21 +328,21 @@ class BookingServiceImplTest {
             case REJECTED:
                 when(bookingRepository.findAllByItemOwnerIdAndStatus(anyLong(), any(BookingStatus.class),
                         any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1)).findAllByItemOwnerIdAndStatus(anyLong(),
                         any(BookingStatus.class), any(Pageable.class));
                 break;
             case PAST:
                 when(bookingRepository.findAllByItemOwnerIdAndEndBefore(anyLong(), any(LocalDateTime.class),
                         any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByItemOwnerIdAndEndBefore(anyLong(), any(LocalDateTime.class), any(Pageable.class));
                 break;
             case CURRENT:
                 when(bookingRepository.findAllByItemOwnerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
                         any(LocalDateTime.class), any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByItemOwnerIdAndStartBeforeAndEndAfter(anyLong(), any(LocalDateTime.class),
                                 any(LocalDateTime.class), any(Pageable.class));
@@ -353,7 +350,7 @@ class BookingServiceImplTest {
             case FUTURE:
                 when(bookingRepository.findAllByItemOwnerIdAndStartAfter(anyLong(), any(LocalDateTime.class),
                         any(Pageable.class))).thenReturn(page);
-                finder.get();
+                finder.run();
                 verify(bookingRepository, times(1))
                         .findAllByItemOwnerIdAndStartAfter(anyLong(), any(LocalDateTime.class), any(Pageable.class));
                 break;

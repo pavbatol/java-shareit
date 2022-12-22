@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -55,6 +57,9 @@ class ItemServiceImplTest {
 
     private ItemServiceImpl itemService;
 
+    @Captor
+    private ArgumentCaptor<Item> itemArgumentCaptor;
+
     private User user1;
     private Item item1;
     private Booking booking1;
@@ -95,7 +100,7 @@ class ItemServiceImplTest {
 
         assertNotNull(added);
         assertEquals(itemDto1, added);
-        verify(itemRepository, times(1)).save(any());
+        verify(itemRepository, times(1)).save(itemArgumentCaptor.capture());
     }
 
     @Test
@@ -118,7 +123,7 @@ class ItemServiceImplTest {
 
         assertNotNull(updated);
         assertEquals(itemDto1, updated);
-        verify(itemRepository, times(1)).save(any());
+        verify(itemRepository, times(1)).save(itemArgumentCaptor.capture());
     }
 
     @Test
