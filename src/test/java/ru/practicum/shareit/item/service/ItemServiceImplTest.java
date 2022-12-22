@@ -1,14 +1,11 @@
 package ru.practicum.shareit.item.service;
 
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -40,8 +37,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
 
@@ -53,10 +48,6 @@ class ItemServiceImplTest {
     private BookingRepository bookingRepository;
     @Mock
     private CommentRepository commentRepository;
-
-//    private final ItemMapper itemMapper;
-//    private final BookingMapper bookingMapper;
-//    private final CommentMapper commentMapper;
 
     private final ItemMapper itemMapper = Mappers.getMapper(ItemMapper.class);
     private final BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
@@ -190,12 +181,6 @@ class ItemServiceImplTest {
     @Test
     void findById_shouldInvokeRepo_andFoundWithComments_andWithCorrectBookings_whenUserIsOwner() {
         LocalDateTime now = LocalDateTime.now();
-
-//        User user2 = makeUser(2L);
-
-//        Item item2 = makeItem(2L, user1);
-//        Item item3 = makeItem(3L, user2);
-//        Page<Item> itemPages = new PageImpl<>(List.of(item1, item2, item3));
 
         Booking bookingLast = makeBooking(2L, user1, item1);
         Booking bookingNext = makeBooking(3L, user1, item1);
