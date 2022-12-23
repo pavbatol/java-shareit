@@ -1,5 +1,7 @@
 package ru.practicum.shareit.request.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
@@ -12,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Value
+@Builder(toBuilder = true)
+@AllArgsConstructor
 public class ItemRequestDto {
 
     Long id;
