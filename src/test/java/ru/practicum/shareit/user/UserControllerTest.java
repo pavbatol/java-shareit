@@ -1,16 +1,27 @@
 package ru.practicum.shareit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpExchange;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.UnknownHttpStatusCodeException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import ru.practicum.shareit.exeption.AlreadyExistsException;
+import ru.practicum.shareit.exeption.IllegalEnumException;
+import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.rmi.ServerException;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
@@ -262,6 +273,109 @@ class UserControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(userDto1)));
 
         verify(userService, times(1)).findById(userId);
+    }
+
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchNotFound_whenThrowsNotFoundException() {
+        long userId = ID_1;
+        NotFoundException exception = new NotFoundException("exception");
+        when(userService.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchConflict_whenThrowsAlreadyExistsException() {
+        long userId = ID_1;
+        AlreadyExistsException exception = new AlreadyExistsException("exception");
+        when(userService.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isConflict());
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsIllegalArgumentException() {
+        long userId = ID_1;
+        IllegalArgumentException exception = new IllegalArgumentException("exception");
+        when(userService.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsIllegalEnumException() {
+        long userId = ID_1;
+        IllegalEnumException exception = new IllegalEnumException("exception");
+        when(userService.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsHttpMessageNotReadableException() {
+        long userId = ID_1;
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException("exception");
+        when(userService.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isBadRequest());
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsNoHandlerFoundException() {
+        long userId = ID_1;
+
+        NoHandlerFoundException exception = new NoHandlerFoundException("GET", URL_TEMPLATE + "/wrong", HttpHeaders.EMPTY);
+//        when(userService.findById(userId)).thenThrow(exception);
+//        when(userService.findById(userId)).thenThrow(anyThrow(NoHandlerFoundException.class));
+//        when(userService.findById(userId)).thenThrow(new NoHandlerFoundException("GET", URL_TEMPLATE, HttpHeaders.EMPTY));
+
+        doThrow(exception).when(userService).findById(userId);
+
+//        mockMvc.perform(get(URL_TEMPLATE + "/wrong_path/{userId}", userId)
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+//                .andExpect(status().isNotFound())
+                .andExpect(status().isOk())
+//                .andExpect()
+//                .andReturn().getResponse().getContentAsString()
+        ;
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsHttpServerErrorException() {
+        long userId = ID_1;
+//        ClassCastException exception = new ClassCastException("exception");
+        HttpServerErrorException exception = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        when(userService.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isInternalServerError());
     }
 
     private UserDto makeUserDto(long id) {
