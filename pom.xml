@@ -193,8 +193,7 @@
 					<configuration>
 						<output>file</output>
 						<excludes>
-							<exclude>**/*MapperImpl.class</exclude>
-							<exclude>**/*annotated*/*.*</exclude>
+							<exclude>**/*MapperImpl.*</exclude>
 						</excludes>
 					</configuration>
 					<executions>
@@ -210,6 +209,9 @@
 								<goal>check</goal>
 							</goals>
 							<configuration>
+								<excludes>
+									<exclude>**/*MapperImpl.*</exclude>
+								</excludes>
 								<rules>
 									<rule>
 										<element>BUNDLE</element>
