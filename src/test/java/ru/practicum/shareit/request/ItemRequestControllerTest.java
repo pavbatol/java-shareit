@@ -38,9 +38,8 @@ class ItemRequestControllerTest {
     @MockBean
     private ItemRequestService requestService;
 
-    ItemRequestDto itemRequestDto1;
-    ItemRequest itemRequest1;
-
+    private ItemRequestDto itemRequestDto1;
+    private ItemRequest itemRequest1;
 
     @BeforeEach
     void setUp() {

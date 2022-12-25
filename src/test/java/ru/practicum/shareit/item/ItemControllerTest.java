@@ -40,10 +40,10 @@ class ItemControllerTest {
     @MockBean
     private CommentService commentService;
 
-    ItemDto itemDto1;
-    ItemDtoResponse itemDtoResponse1;
-    CommentDto commentDto1;
-    CommentDtoShort commentDtoShort1;
+    private ItemDto itemDto1;
+    private ItemDtoResponse itemDtoResponse1;
+    private CommentDto commentDto1;
+    private CommentDtoShort commentDtoShort1;
 
     @BeforeEach
     void setUp() {
