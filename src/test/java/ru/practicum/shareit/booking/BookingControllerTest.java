@@ -273,15 +273,15 @@ class BookingControllerTest {
         long userId = ID_1;
         int from = 0;
         int size = 10;
-        when(bookingService.findAllByBookerId(anyLong(), anyString(), anyInt(), anyInt()))
+        when(bookingService.findAllByOwnerId(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDto1, bookingDto1));
 
-        mockMvc.perform(get(URL_TEMPLATE)
+        mockMvc.perform(get(URL_TEMPLATE + "/owner")
                         .header(X_SHARER_USER_ID, userId)
                 )
                 .andExpect(jsonPath("$.length()", is(2)));
 
-        verify(bookingService, times(1)).findAllByBookerId(userId, ALL, from, size);
+        verify(bookingService, times(1)).findAllByOwnerId(userId, ALL, from, size);
     }
 
     @SneakyThrows

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.model.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequestMapper;
@@ -19,8 +20,7 @@ import ru.practicum.shareit.user.storage.UserRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -88,6 +88,16 @@ class ItemRequestServiceImplTest {
 
         assertEquals(itemRequestDto1, found);
         verify(requestRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void findById_shouldThrowsException_whenNotExists() {
+        when(userRepository.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(NotFoundException.class,
+                () -> requestService.findById(itemRequest1.getId(), user1.getId()));
+
+        verifyNoInteractions(requestRepository);
     }
 
     @Test
