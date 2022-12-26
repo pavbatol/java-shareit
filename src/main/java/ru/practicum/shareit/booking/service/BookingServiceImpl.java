@@ -6,7 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.*;
-import ru.practicum.shareit.booking.model.enums.BookingsByStateFarm;
+import ru.practicum.shareit.booking.model.enums.BookingsFactory;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.NotFoundException;
@@ -26,6 +26,7 @@ import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 public class BookingServiceImpl implements BookingService {
 
     protected static final String ENTITY_SIMPLE_NAME = "Booking";
+    public static final String START = "start";
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
     private final UserRepository userRepository;
@@ -71,10 +72,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByBookerId(Long bookerId, String state, int from, int size) {
-        Sort sort = Sort.by("start").descending();
+        Sort sort = Sort.by(START).descending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
-        List<Booking> bookings = farm.getForBooker(bookerId, state, pageRequest);
+        BookingsFactory factory = BookingsFactory.getFactory(bookingRepository);
+        List<Booking> bookings = factory.getForBooker(bookerId, state, pageRequest);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
         }
@@ -83,10 +84,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state, int from, int size) {
-        Sort sort = Sort.by("start").descending();
+        Sort sort = Sort.by(START).descending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        BookingsByStateFarm farm = BookingsByStateFarm.getFarm(bookingRepository);
-        List<Booking> bookings = farm.getForOwner(ownerId, state, pageRequest);
+        BookingsFactory factory = BookingsFactory.getFactory(bookingRepository);
+        List<Booking> bookings = factory.getForOwner(ownerId, state, pageRequest);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");
         }

@@ -35,6 +35,7 @@ import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 public class ItemServiceImpl implements ItemService {
 
     protected static final String ENTITY_SIMPLE_NAME = "Thing";
+    public static final String ID = "id";
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
@@ -64,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDtoResponse> findAllByUserId(Long userId, int from, int size) {
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by(ID).ascending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<Item> found = itemRepository.findAllByOwnerId(userId, pageRequest).getContent();
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
@@ -91,7 +92,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchByNameOrDescription(String text, int from, int size) {
-        Sort sort = Sort.by("id").ascending();
+        Sort sort = Sort.by(ID).ascending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<Item> searched = StringUtils.isBlank(text)
                 ? Collections.emptyList()

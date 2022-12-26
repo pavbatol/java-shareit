@@ -37,7 +37,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
-import static ru.practicum.shareit.booking.model.enums.BookingsByStateFarm.State;
+import static ru.practicum.shareit.booking.model.enums.BookingsFactory.State;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)

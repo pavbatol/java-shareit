@@ -23,6 +23,7 @@ import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     protected static final String ENTITY_SIMPLE_NAME = "Request";
+    public static final String CREATED = "created";
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRequestMapper itemRequestMapper;
@@ -55,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestDto> findAllByPage(Long userId, int from, int size) {
-        Sort sort = Sort.by("created").descending();
+        Sort sort = Sort.by(CREATED).descending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<ItemRequest> found = itemRequestRepository.findAllByRequesterIdNot(userId, pageRequest);
         log.debug("The current size of the page for {}: {} for userId #{}", ENTITY_SIMPLE_NAME, found.size(), userId);

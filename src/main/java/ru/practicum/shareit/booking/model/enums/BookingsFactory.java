@@ -16,13 +16,13 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BookingsByStateFarm {
+public final class BookingsFactory {
 
     private final BookingRepository repository;
-    private final Map<State, BiFunction<Long, Pageable, Page<Booking>>> bookerFunctions = fillBookerFunctions();
-    private final Map<State, BiFunction<Long, Pageable, Page<Booking>>> ownerFunctions = fillOwnerFunctions();
+    private final Map<State, BiFunction<Long, Pageable, Page<Booking>>> bookerFunctions = getBookerFunctions();
+    private final Map<State, BiFunction<Long, Pageable, Page<Booking>>> ownerFunctions = getOwnerFunctions();
 
-    private Map<State, BiFunction<Long, Pageable, Page<Booking>>> fillBookerFunctions() {
+    private Map<State, BiFunction<Long, Pageable, Page<Booking>>> getBookerFunctions() {
         return Map.of(
                 State.ALL, (userId, pageRequest)
                         -> repository.findAllByBookerId(userId, pageRequest),
@@ -40,7 +40,7 @@ public final class BookingsByStateFarm {
         );
     }
 
-    private Map<State, BiFunction<Long, Pageable, Page<Booking>>> fillOwnerFunctions() {
+    private Map<State, BiFunction<Long, Pageable, Page<Booking>>> getOwnerFunctions() {
         return Map.of(
                 State.ALL, (userId, pageRequest)
                         -> repository.findAllByItemOwnerId(userId, pageRequest),
@@ -58,26 +58,6 @@ public final class BookingsByStateFarm {
         );
     }
 
-    private List<Booking> get(Long userId, State state, Pageable pageable, boolean isBooker) {
-        BiFunction<Long, Pageable, Page<Booking>> function = isBooker
-                ? bookerFunctions.get(state)
-                : ownerFunctions.get(state);
-        if (Objects.isNull(function)) {
-            throw new IllegalEnumException("No mapping for the state: " + state);
-        }
-        return function.apply(userId, pageable).getContent();
-    }
-
-    private List<Booking> get(Long userId, @NonNull String stateName, Pageable pageable, boolean isBooker) {
-        State state;
-        try {
-            state = State.valueOf(stateName.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalEnumException("Unknown state: " + stateName);
-        }
-        return get(userId, state, pageable, isBooker);
-    }
-
     public List<Booking> getForBooker(Long userId, String stateName, Pageable pageable) {
         return get(userId, stateName, pageable, true);
     }
@@ -86,8 +66,27 @@ public final class BookingsByStateFarm {
         return get(userId, stateName, pageable, false);
     }
 
-    public static BookingsByStateFarm getFarm(@NonNull BookingRepository repository) {
-        return new BookingsByStateFarm(repository);
+    public static BookingsFactory getFactory(@NonNull BookingRepository repository) {
+        return new BookingsFactory(repository);
+    }
+
+    private List<Booking> get(Long userId, @NonNull String stateName, Pageable pageable, boolean booker) {
+        State state;
+        try {
+            state = State.valueOf(stateName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalEnumException("Unknown state: " + stateName);
+        }
+
+        BiFunction<Long, Pageable, Page<Booking>> function = booker
+                ? bookerFunctions.get(state)
+                : ownerFunctions.get(state);
+
+        if (Objects.isNull(function)) {
+            throw new IllegalEnumException("No mapping for the state: " + state);
+        }
+
+        return function.apply(userId, pageable).getContent();
     }
 
     public enum State {
