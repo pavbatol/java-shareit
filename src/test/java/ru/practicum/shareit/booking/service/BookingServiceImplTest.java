@@ -1,15 +1,14 @@
 package ru.practicum.shareit.booking.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,14 @@ import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
+import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,8 +41,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.booking.model.enums.BookingsFactory.State;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @ExtendWith(MockitoExtension.class)
 class BookingServiceImplTest {
 
@@ -51,16 +51,28 @@ class BookingServiceImplTest {
     @Mock
     private ItemRepository itemRepository;
 
-    private final BookingMapper bookingMapper;
     private BookingServiceImpl bookingService;
+    private final BookingMapper bookingMapper = Mappers.getMapper(BookingMapper.class);
+    private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
+    private final ItemMapper itemMapper = Mappers.getMapper(ItemMapper.class);
+
     private User user1;
     private Item item1;
     private Booking booking1;
     private BookingDtoAdd bookingDtoAdd1;
     private BookingDto bookingDto1;
 
+    @SneakyThrows
     @BeforeEach
     void setUp() {
+        Field field = bookingMapper.getClass().getDeclaredField("userMapper");
+        field.setAccessible(true);
+        field.set(bookingMapper, userMapper);
+
+        field = bookingMapper.getClass().getDeclaredField("itemMapper");
+        field.setAccessible(true);
+        field.set(bookingMapper, itemMapper);
+
         bookingService = new BookingServiceImpl(
                 bookingRepository,
                 bookingMapper,
