@@ -3,19 +3,26 @@ package ru.practicum.shareit.item.model;
 import org.mapstruct.Mapping;
 import ru.practicum.shareit.booking.model.BookingDtoShort;
 import ru.practicum.shareit.common.Mapper;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 @org.mapstruct.Mapper(componentModel = "spring")
-public abstract class ItemMapper implements Mapper<Item, ItemDto> {
+public interface ItemMapper extends Mapper<Item, ItemDto> {
 
-    public Item toEntity(ItemDto itemDto, User owner) {
-        Item item = toEntity(itemDto);
-        item.setOwner(owner);
-        return item;
-    }
+    @Override
+    @Mapping(target = "requestId", source = "entity.request.id")
+    ItemDto toDto(Item entity);
+
+    @Mapping(target = "id", source = "dto.id")
+    @Mapping(target = "name", source = "dto.name")
+    @Mapping(target = "owner", source = "owner")
+    @Mapping(target = "request", source = "dto.requestId")
+    Item toEntity(ItemDto dto, User owner);
+
+    ItemRequest getItemRequest(Long id);
 
     @Mapping(target = "id", source = "entity.id")
     @Mapping(target = "lastBooking", source = "last")
     @Mapping(target = "nextBooking", source = "next")
-    public abstract ItemDtoResponse toResponseDto(Item entity, BookingDtoShort last, BookingDtoShort next);
+    ItemDtoResponse toResponseDto(Item entity, BookingDtoShort last, BookingDtoShort next);
 }

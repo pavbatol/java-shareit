@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.model;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.Hibernate;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -37,8 +38,9 @@ public class Item {
     @Column(nullable = false)
     Boolean available;
 
-    @Column(name = "request_id")
-    Long requestId;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    ItemRequest request;
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)

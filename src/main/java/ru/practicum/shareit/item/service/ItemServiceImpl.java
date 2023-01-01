@@ -3,6 +3,8 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingMapper;
@@ -33,6 +35,7 @@ import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 public class ItemServiceImpl implements ItemService {
 
     protected static final String ENTITY_SIMPLE_NAME = "Thing";
+    public static final String ID = "id";
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
@@ -43,8 +46,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto add(ItemDto itemDto, Long userId) {
-        Item enrichedItemDto = itemMapper.toEntity(itemDto, getNonNullObject(userRepository, userId));
-        Item added = itemRepository.save(enrichedItemDto);
+        Item item = itemMapper.toEntity(itemDto, getNonNullObject(userRepository, userId));
+        Item added = itemRepository.save(item);
         log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, added);
         return itemMapper.toDto(added);
     }
@@ -61,8 +64,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoResponse> findAllByUserId(Long userId) {
-        List<Item> found = itemRepository.findAllByOwner_IdOrderByIdAsc(userId);
+    public List<ItemDtoResponse> findAllByUserId(Long userId, int from, int size) {
+        Sort sort = Sort.by(ID).ascending();
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
+        List<Item> found = itemRepository.findAllByOwnerId(userId, pageRequest).getContent();
         log.debug("The current size of the list for {}: {}", ENTITY_SIMPLE_NAME, found.size());
         List<Long> itemIds = found.stream()
                 .filter(Objects::nonNull)
@@ -86,10 +91,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchByNameOrDescription(String text) {
+    public List<ItemDto> searchByNameOrDescription(String text, int from, int size) {
+        Sort sort = Sort.by(ID).ascending();
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
         List<Item> searched = StringUtils.isBlank(text)
                 ? Collections.emptyList()
-                : itemRepository.searchByNameOrDescription(text);
+                : itemRepository.searchByNameOrDescription(text, pageRequest).getContent();
         return itemMapper.toDtos(searched);
     }
 

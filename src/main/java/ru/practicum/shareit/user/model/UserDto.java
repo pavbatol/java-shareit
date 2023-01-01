@@ -1,5 +1,7 @@
 package ru.practicum.shareit.user.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Value;
 import ru.practicum.shareit.common.OnAdd;
 import ru.practicum.shareit.validator.annotated.NullOrNotBlank;
@@ -14,6 +16,8 @@ import javax.validation.constraints.Size;
  */
 
 @Value
+@Builder(toBuilder = true)
+@AllArgsConstructor
 public class UserDto {
 
     Long id;
