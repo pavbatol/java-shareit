@@ -19,6 +19,7 @@ public class BookingClient extends BaseClient {
 
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
+//    public BookingClient(@Value("http://localhost:8080/") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
@@ -27,21 +28,46 @@ public class BookingClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
-        Map<String, Object> parameters = Map.of(
-                "state", state.name(),
-                "from", from,
-                "size", size
-        );
-        return get("?state={state}&from={from}&size={size}", userId, parameters);
-    }
+//    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
+//        Map<String, Object> parameters = Map.of(
+//                "state", state.name(),
+//                "from", from,
+//                "size", size
+//        );
+//        return get("?state={state}&from={from}&size={size}", userId, parameters);
+//    }
 
 
-    public ResponseEntity<Object> bookItem(long userId, BookItemRequestDto requestDto) {
+    public ResponseEntity<Object> add(BookItemRequestDto requestDto, long userId) {
         return post("", userId, requestDto);
     }
 
-    public ResponseEntity<Object> getBooking(long userId, Long bookingId) {
+    public ResponseEntity<Object> approve(Long bookingId, Long userId, Boolean approved) {
+        Map<String, Object> parameters = Map.of(
+                "approved", approved
+        );
+        return patch("/" + bookingId, userId, parameters, null);
+    }
+
+    public ResponseEntity<Object> findById(Long bookingId, long userId) {
         return get("/" + bookingId, userId);
+    }
+
+    public ResponseEntity<Object> findAllByBookerId(Long bookerId, BookingState bookingState, Integer from, Integer size) {
+        Map<String, Object> parameters = Map.of(
+                "state", bookingState.name(),
+                "from", from,
+                "size", size
+        );
+        return get("?state={state}&from={from}&size={size}", bookerId, parameters);
+    }
+
+    public ResponseEntity<Object> findAllByOwnerId(Long ownerId, BookingState bookingState, Integer from, Integer size) {
+        Map<String, Object> parameters = Map.of(
+                "state", bookingState.name(),
+                "from", from,
+                "size", size
+        );
+        return get("/owner?state={state}&from={from}&size={size}", ownerId, parameters);
     }
 }
