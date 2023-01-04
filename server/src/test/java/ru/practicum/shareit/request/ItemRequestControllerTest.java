@@ -75,9 +75,7 @@ class ItemRequestControllerTest {
                         .content(objectMapper.writeValueAsString(badItemRequestDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(requestService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -90,9 +88,7 @@ class ItemRequestControllerTest {
                         .content(objectMapper.writeValueAsString(badItemRequestDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(requestService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -105,9 +101,7 @@ class ItemRequestControllerTest {
                         .content(objectMapper.writeValueAsString(badItemRequestDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(requestService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -120,9 +114,7 @@ class ItemRequestControllerTest {
                         .content(objectMapper.writeValueAsString(badItemRequestDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(requestService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -186,9 +178,7 @@ class ItemRequestControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(requestService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -203,9 +193,7 @@ class ItemRequestControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(requestService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     private ItemRequestDto makeItemRequestDto(long id, UserDto userDto) {

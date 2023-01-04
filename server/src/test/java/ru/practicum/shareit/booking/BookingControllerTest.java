@@ -75,9 +75,9 @@ class BookingControllerTest {
                         .content(objectMapper.writeValueAsString(incomingWithItemIdIsNull))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).add(any(), anyLong());
     }
 
     @SneakyThrows
@@ -90,9 +90,9 @@ class BookingControllerTest {
                         .content(objectMapper.writeValueAsString(incomingWithStartIsNull))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).add(any(), anyLong());
     }
 
     @SneakyThrows
@@ -105,9 +105,9 @@ class BookingControllerTest {
                         .content(objectMapper.writeValueAsString(incomingWithEndIsNull))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).add(any(), anyLong());
     }
 
     @SneakyThrows
@@ -121,9 +121,9 @@ class BookingControllerTest {
                         .content(objectMapper.writeValueAsString(incomingWithStartIPast))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).add(any(), anyLong());
     }
 
     @SneakyThrows
@@ -137,9 +137,9 @@ class BookingControllerTest {
                         .content(objectMapper.writeValueAsString(incomingWithEndIPast))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).add(any(), anyLong());
     }
 
     @SneakyThrows
@@ -224,9 +224,9 @@ class BookingControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).findAllByBookerId(anyLong(), anyString(), anyInt(), anyInt());
     }
 
     @SneakyThrows
@@ -242,9 +242,9 @@ class BookingControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(bookingService);
+        verify(bookingService, times(1)).findAllByBookerId(anyLong(), anyString(), anyInt(), anyInt());
     }
 
 
@@ -297,9 +297,7 @@ class BookingControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(bookingService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -315,9 +313,7 @@ class BookingControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(bookingService);
+                .andExpect(status().is2xxSuccessful());
     }
 
 

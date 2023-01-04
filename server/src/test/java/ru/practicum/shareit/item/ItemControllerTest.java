@@ -18,6 +18,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -81,9 +82,9 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
+        verify(itemService, times(1)).add(any(ItemDto.class), anyLong());
     }
 
     @SneakyThrows
@@ -96,9 +97,9 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
+        verify(itemService, times(1)).add(any(ItemDto.class), anyLong());
     }
 
     @SneakyThrows
@@ -111,9 +112,9 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
+        verify(itemService, times(1)).add(any(ItemDto.class), anyLong());
     }
 
     @SneakyThrows
@@ -126,9 +127,9 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
+        verify(itemService, times(1)).add(any(ItemDto.class), anyLong());
     }
 
     @SneakyThrows
@@ -141,9 +142,9 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
+        verify(itemService, times(1)).add(any(ItemDto.class), anyLong());
     }
 
     @SneakyThrows
@@ -175,9 +176,8 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
     }
 
     @SneakyThrows
@@ -190,9 +190,8 @@ class ItemControllerTest {
                         .content(objectMapper.writeValueAsString(badIncomingDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
     }
 
     @SneakyThrows
@@ -259,9 +258,7 @@ class ItemControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(itemService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -276,9 +273,8 @@ class ItemControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
     }
 
     @SneakyThrows
@@ -314,9 +310,8 @@ class ItemControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
     }
 
     @SneakyThrows
@@ -331,9 +326,8 @@ class ItemControllerTest {
                         .param("from", String.valueOf(from))
                         .param("size", String.valueOf(size))
                 )
-                .andExpect(status().isBadRequest());
+                .andExpect(status().is2xxSuccessful());
 
-        verifyNoInteractions(itemService);
     }
 
     @SneakyThrows

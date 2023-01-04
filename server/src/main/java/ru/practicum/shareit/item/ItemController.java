@@ -13,10 +13,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
-//@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
@@ -28,9 +24,7 @@ public class ItemController {
     private final CommentService commentService;
 
     @PostMapping
-//    @Validated(OnAdd.class)
     @Operation(summary = "add")
-//    public ItemDto add(@Valid @RequestBody ItemDto itemDto,
     public ItemDto add(@RequestBody ItemDto itemDto,
                        @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return itemService.add(itemDto, userId);
@@ -38,7 +32,6 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     @Operation(summary = "update")
-//    public ItemDto update(@Valid @RequestBody ItemDto itemDto,
     public ItemDto update(@RequestBody ItemDto itemDto,
                           @PathVariable(value = "itemId") Long itemId,
                           @RequestHeader(X_SHARER_USER_ID) Long userId) {
@@ -55,8 +48,6 @@ public class ItemController {
     @GetMapping
     @Operation(summary = "findAllByUserId")
     public List<ItemDtoResponse> findAllByUserId(@RequestHeader(X_SHARER_USER_ID) Long userId,
-//                                                 @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-//                                                 @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
                                                  @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                  @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return itemService.findAllByUserId(userId, from, size);
@@ -65,8 +56,6 @@ public class ItemController {
     @GetMapping("/search")
     @Operation(summary = "searchByNameOrDescription")
     public List<ItemDto> searchByNameOrDescription(@RequestParam(value = "text") String text,
-//                                                   @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-//                                                   @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
                                                    @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                    @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return itemService.searchByNameOrDescription(text, from, size);

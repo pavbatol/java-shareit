@@ -74,9 +74,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -89,9 +87,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -104,9 +100,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -119,9 +113,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -134,9 +126,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -149,9 +139,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -180,9 +168,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -195,9 +181,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -210,9 +194,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows
@@ -225,9 +207,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(badUserDto))
                         .header(X_SHARER_USER_ID, ID_1)
                 )
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(userService);
+                .andExpect(status().is2xxSuccessful());
     }
 
     @SneakyThrows

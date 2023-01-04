@@ -9,10 +9,6 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-bookings.
- */
-//@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
@@ -25,7 +21,6 @@ public class BookingController {
 
     @PostMapping
     @Operation(summary = "add")
-//    public BookingDto add(@Valid @RequestBody BookingDtoAdd dto,
     public BookingDto add(@RequestBody BookingDtoAdd dto,
                           @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return bookingService.add(dto, userId);
@@ -50,8 +45,6 @@ public class BookingController {
     @Operation(summary = "findAllByBookerId")
     public List<BookingDto> findAllByBookerId(@RequestHeader(X_SHARER_USER_ID) Long bookerId,
                                               @RequestParam(value = "state", defaultValue = ALL) String state,
-//                                              @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-//                                              @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
                                               @RequestParam(value = "from", defaultValue = "0") Integer from,
                                               @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return bookingService.findAllByBookerId(bookerId, state, from, size);
@@ -61,8 +54,6 @@ public class BookingController {
     @Operation(summary = "findAllByOwnerId")
     public List<BookingDto> findAllByOwnerId(@RequestHeader(X_SHARER_USER_ID) Long ownerId,
                                              @RequestParam(value = "state", defaultValue = ALL) String state,
-//                                             @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-//                                             @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
                                              @RequestParam(value = "from", defaultValue = "0") Integer from,
                                              @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return bookingService.findAllByOwnerId(ownerId, state, from, size);
