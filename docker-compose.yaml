@@ -6,8 +6,6 @@ services:
     image: postgres:15.1-alpine
     ports:
       - "6541:5432"
-#    volumes:
-#      - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=shareit
       - POSTGRES_USER=root
@@ -16,7 +14,7 @@ services:
   server:
     build: ./server
     ports:
-      - "8090:8090"
+      - "9090:9090"
     depends_on:
       - db_postgres
     environment:
@@ -33,4 +31,4 @@ services:
     depends_on:
       - server
     environment:
-      - SHAREIT-SERVER_URL=http://server:8090
+      - SHAREIT-SERVER_URL=http://server:9090
