@@ -19,7 +19,6 @@ public class BookingClient extends BaseClient {
 
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
-//    public BookingClient(@Value("http://localhost:8080/") String serverUrl, RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
@@ -27,16 +26,6 @@ public class BookingClient extends BaseClient {
                         .build()
         );
     }
-
-//    public ResponseEntity<Object> getBookings(long userId, BookingState state, Integer from, Integer size) {
-//        Map<String, Object> parameters = Map.of(
-//                "state", state.name(),
-//                "from", from,
-//                "size", size
-//        );
-//        return get("?state={state}&from={from}&size={size}", userId, parameters);
-//    }
-
 
     public ResponseEntity<Object> add(BookItemRequestDto requestDto, long userId) {
         return post("", userId, requestDto);
