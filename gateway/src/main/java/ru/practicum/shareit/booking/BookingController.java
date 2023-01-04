@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exeption.IllegalEnumException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -56,7 +57,7 @@ public class BookingController {
                                                     @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                     @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         BookingState bookingState = BookingState.from(state)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
+                .orElseThrow(() -> new IllegalEnumException("Unknown state: " + state));
         log.info("Get booking with state {}, userId={}, from={}, size={}", state, bookerId, from, size);
         return bookingClient.findAllByBookerId(bookerId, bookingState, from, size);
     }
@@ -68,7 +69,7 @@ public class BookingController {
                                                    @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                    @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         BookingState bookingState = BookingState.from(state)
-                .orElseThrow(() -> new IllegalArgumentException("Unknown state: " + state));
+                .orElseThrow(() -> new IllegalEnumException("Unknown state: " + state));
         log.info("Get booking with state {}, userId={}, from={}, size={}", state, ownerId, from, size);
         return bookingClient.findAllByOwnerId(ownerId, bookingState, from, size);
     }
