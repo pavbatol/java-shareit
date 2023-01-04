@@ -12,7 +12,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Validated
+//@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
@@ -24,7 +24,8 @@ public class ItemRequestController {
 
     @PostMapping
     @Operation(summary = "add")
-    public ItemRequestDto add(@Valid @RequestBody ItemRequestDto dto,
+//    public ItemRequestDto add(@Valid @RequestBody ItemRequestDto dto,
+    public ItemRequestDto add(@RequestBody ItemRequestDto dto,
                               @RequestHeader(X_SHARER_USER_ID) Long userId) {
         return requestService.add(dto, userId);
     }
@@ -45,8 +46,10 @@ public class ItemRequestController {
     @GetMapping("/all")
     @Operation(summary = "findAllByPage")
     public List<ItemRequestDto> findAllByPage(@RequestHeader(X_SHARER_USER_ID) Long userId,
-                                              @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
-                                              @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
+//                                              @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
+//                                              @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                                              @RequestParam(value = "from", defaultValue = "0") Integer from,
+                                              @RequestParam(value = "size", defaultValue = "10") Integer size) {
         return requestService.findAllByPage(userId, from, size);
     }
 }
