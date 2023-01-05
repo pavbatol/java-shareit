@@ -55,7 +55,6 @@ class CommentRepositoryTest {
     public void tearDown() {
         itemRepository.deleteAll();
         userRepository.deleteAll();
-        commentRepository.deleteAll();
     }
 
     @Test
