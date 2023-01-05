@@ -22,7 +22,6 @@ import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,7 +99,7 @@ public class ItemServiceImpl implements ItemService {
         return itemMapper.toDtos(searched);
     }
 
-    private ItemDtoResponse getResponseDto(@NotNull Item item, List<Booking> bookings) {
+    private ItemDtoResponse getResponseDto(Item item, List<Booking> bookings) {
         LocalDateTime current = LocalDateTime.now();
 
         List<Booking> itemBookings = bookings.stream()

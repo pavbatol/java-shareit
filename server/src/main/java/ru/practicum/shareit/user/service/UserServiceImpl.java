@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
@@ -23,14 +22,14 @@ public class UserServiceImpl implements UserService {
     private final UserMapper mapper;
 
     @Override
-    public UserDto add(@NotNull UserDto userDto) {
+    public UserDto add(UserDto userDto) {
         User added = userRepository.save(mapper.toEntity(userDto));
         log.debug("Added {}: {}", ENTITY_SIMPLE_NAME, added);
         return mapper.toDto(added);
     }
 
     @Override
-    public UserDto update(@NotNull UserDto userDto, Long userId) {
+    public UserDto update(UserDto userDto, Long userId) {
         User entity = mapper.updateEntity(userDto, getNonNullObject(userRepository, userId));
         User updated = userRepository.save(entity);
         log.debug("Updated {}: {}", ENTITY_SIMPLE_NAME, updated);

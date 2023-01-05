@@ -8,8 +8,6 @@ import lombok.experimental.NonFinal;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.user.model.UserDto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -20,8 +18,6 @@ public class ItemRequestDto {
 
     Long id;
 
-    @NotBlank
-    @Size(max = 512)
     String description;
 
     UserDto requester;

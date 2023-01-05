@@ -5,18 +5,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.model.*;
-import ru.practicum.shareit.booking.model.enums.BookingsFactory;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingDto;
+import ru.practicum.shareit.booking.model.BookingDtoAdd;
+import ru.practicum.shareit.booking.model.BookingMapper;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
+import ru.practicum.shareit.booking.model.enums.BookingsFactory;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static ru.practicum.shareit.validator.ValidatorManager.getNonNullObject;
 
@@ -94,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.toDtos(bookings);
     }
 
-    private void checkAvailable(@NotNull Booking booking) {
+    private void checkAvailable(Booking booking) {
         Optional.ofNullable(booking.getItem()).ifPresentOrElse(
                 item -> {
                     if (Objects.isNull(item.getAvailable()) || !item.getAvailable()) {
@@ -106,7 +110,7 @@ public class BookingServiceImpl implements BookingService {
                 });
     }
 
-    private void checkDates(@NotNull Booking booking) {
+    private void checkDates(Booking booking) {
         LocalDateTime start = Objects.requireNonNull(booking.getStart());
         LocalDateTime end = Objects.requireNonNull(booking.getEnd());
         if (end.isBefore(start) || end.equals(start) || start.isBefore(LocalDateTime.now())) {

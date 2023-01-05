@@ -22,7 +22,6 @@ import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return getResponseEntity(message, ex, BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({ValidationException.class, ConstraintViolationException.class})
+    @ExceptionHandler({ValidationException.class})
     protected ResponseEntity<Object> handleValidateEx(RuntimeException ex, WebRequest request) {
         String message = "Incorrect data";
         return getResponseEntity(message, ex, BAD_REQUEST, request);
