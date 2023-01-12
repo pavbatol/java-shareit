@@ -4,18 +4,24 @@ import java.time.LocalDateTime;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
-@NoArgsConstructor
+@Value
+@Builder(toBuilder = true)
 @AllArgsConstructor
 public class BookItemRequestDto {
-    private long itemId;
+
+    long id;
+
+    long itemId;
+
+    @NotNull
     @FutureOrPresent
-    private LocalDateTime start;
+    LocalDateTime start;
+
+    @NotNull
     @Future
-    private LocalDateTime end;
+    LocalDateTime end;
 }

@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -14,12 +13,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.IllegalEnumException;
-import ru.practicum.shareit.exeption.NotFoundException;
-import ru.practicum.shareit.exeption.ValidationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
@@ -28,31 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @RestControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<Object> handleNotFoundEx(RuntimeException ex, WebRequest request) {
-        String message = "Object not found";
-        return getResponseEntity(message, ex, NOT_FOUND, request);
-    }
-
-    @ExceptionHandler(AlreadyExistsException.class)
-    protected ResponseEntity<Object> handleAlreadyExistsEx(RuntimeException ex, WebRequest request) {
-        String message = "Already exists";
-        return getResponseEntity(message, ex, CONFLICT, request);
-    }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    protected ResponseEntity<Object> handleIncorrectParameterEx(RuntimeException ex, WebRequest request) {
-        String message = "Invalid parameter value";
-        return getResponseEntity(message, ex, BAD_REQUEST, request);
-    }
-
-    @ExceptionHandler({ValidationException.class, ConstraintViolationException.class})
+    @ExceptionHandler({ConstraintViolationException.class})
     protected ResponseEntity<Object> handleValidateEx(RuntimeException ex, WebRequest request) {
         String message = "Incorrect data";
         return getResponseEntity(message, ex, BAD_REQUEST, request);
@@ -60,7 +37,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalEnumException.class)
     public ResponseEntity<Map<String, String>> handleEnumEx(IllegalEnumException ex) {
-        return new ResponseEntity<>(Map.of("error", ex.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(Map.of("error", ex.getMessage()), BAD_REQUEST);
     }
 
     @NonNull
@@ -71,32 +48,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   @NonNull WebRequest request) {
         String message = "Incorrect data";
         return getResponseEntity(message, ex, status, request);
-    }
-
-    @NonNull
-    @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(@NonNull HttpMessageNotReadableException ex,
-                                                                  @NonNull HttpHeaders headers,
-                                                                  @NonNull HttpStatus status,
-                                                                  @NonNull WebRequest request) {
-        String message = "Unreadable JSON";
-        return getResponseEntity(message, ex, status, request);
-    }
-
-    @NonNull
-    @Override
-    protected ResponseEntity<Object> handleNoHandlerFoundException(@NonNull NoHandlerFoundException ex,
-                                                                   @NonNull HttpHeaders headers,
-                                                                   @NonNull HttpStatus status,
-                                                                   @NonNull WebRequest request) {
-        String message = "The handler for the endpoint was not found";
-        return getResponseEntity(message, ex, status, request);
-    }
-
-    @ExceptionHandler
-    protected ResponseEntity<Object> handleThrowableEx(Throwable ex, WebRequest request) {
-        String message = "Unexpected error";
-        return getResponseEntity(message, ex, INTERNAL_SERVER_ERROR, request);
     }
 
     private ResponseEntity<Object> getResponseEntity(String message,

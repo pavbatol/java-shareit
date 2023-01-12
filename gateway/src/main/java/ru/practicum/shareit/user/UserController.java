@@ -19,41 +19,41 @@ import javax.validation.Valid;
 @RequestMapping(path = "/users")
 public class UserController {
 
-    private final UserClient userWebClient;
+    private final UserClient userClient;
 
     @PostMapping
     @Operation(summary = "add")
     public Mono<ResponseEntity<String>> add(@Valid @RequestBody UserDtoAdd dto) {
-        log.info("(add) Post User: {}", dto);
-        return userWebClient.add((dto));
+        log.info("(add) Post User with dto={}", dto);
+        return userClient.add((dto));
     }
 
     @PatchMapping("/{userId}")
     @Operation(summary = "update")
     public Mono<ResponseEntity<String>> update(@Valid @RequestBody UserDtoUpdate dto,
                                                @PathVariable(value = "userId") Long userId) {
-        log.info("(update) Patch User, userId: {},  dto: {}", userId, dto);
-        return userWebClient.update(dto, userId);
+        log.info("(update) Patch User with userId={}, dto={}", userId, dto);
+        return userClient.update(dto, userId);
     }
 
     @DeleteMapping("/{userId}")
     @Operation(summary = "remove")
     public Mono<ResponseEntity<String>> remove(@PathVariable(value = "userId") Long userId) {
-        log.info("(remove) Delete User, userId: {}", userId);
-        return userWebClient.remove(userId);
+        log.info("(remove) Delete User with userId={}", userId);
+        return userClient.remove(userId);
     }
 
     @GetMapping
     @Operation(summary = "findAll")
     public Mono<ResponseEntity<String>> findAll() {
         log.info("(findAll) Get Users");
-        return userWebClient.findAll();
+        return userClient.findAll();
     }
 
     @GetMapping("/{userId}")
     @Operation(summary = "findById")
     public Mono<ResponseEntity<String>> findById(@PathVariable(value = "userId") Long userId) {
-        log.info("(findById) Get User, userId: {}", userId);
-        return userWebClient.findById(userId);
+        log.info("(findById) Get User with userId={}", userId);
+        return userClient.findById(userId);
     }
 }

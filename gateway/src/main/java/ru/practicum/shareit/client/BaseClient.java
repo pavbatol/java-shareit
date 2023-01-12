@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,14 +41,6 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.POST, furtherPath, userId, parameters, body);
     }
 
-    protected Mono<ResponseEntity<String>> patch(String furtherPath, Object body) {
-        return patch(furtherPath, null, null, body);
-    }
-
-    protected Mono<ResponseEntity<String>> patch(String furtherPath, long userId) {
-        return patch(furtherPath, userId, null, null);
-    }
-
     protected Mono<ResponseEntity<String>> patch(String furtherPath, long userId, Object body) {
         return patch(furtherPath, userId, null, body);
     }
@@ -57,15 +50,12 @@ public class BaseClient {
         return makeAndSendRequest(HttpMethod.PATCH, furtherPath, userId, parameters, body);
     }
 
-    protected Mono<ResponseEntity<String>> delete(String path) {
-        return delete(path, null, null);
-    }
-
     protected Mono<ResponseEntity<String>> delete(String furtherPath, long userId) {
         return delete(furtherPath, userId, null);
     }
 
-    protected Mono<ResponseEntity<String>> delete(String furtherPath, Long userId, @Nullable Map<String, Object> parameters) {
+    protected Mono<ResponseEntity<String>> delete(String furtherPath, Long userId,
+                                                  @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.DELETE, furtherPath, userId, parameters, null);
     }
 
@@ -77,7 +67,8 @@ public class BaseClient {
         return get(furtherPath, userId, null);
     }
 
-    protected Mono<ResponseEntity<String>> get(String furtherPath, Long userId, @Nullable Map<String, Object> parameters) {
+    protected Mono<ResponseEntity<String>> get(String furtherPath, Long userId,
+                                               @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, furtherPath, userId, parameters, null);
     }
 
@@ -88,7 +79,7 @@ public class BaseClient {
                                                             @Nullable Object body) {
         return client
                 .method(method)
-                .uri(getExpandedPath(furtherPath, parameters))
+                .uri(furtherPath, parameters != null ? parameters : new HashMap<>())
                 .body(body != null ? BodyInserters.fromValue(body) : null)
                 .headers(httpHeaders -> defaultHeaders(httpHeaders, userId))
                 .retrieve()
@@ -101,16 +92,6 @@ public class BaseClient {
                                 .body(ex.getResponseBodyAsString())
                         )
                 );
-    }
-
-    private String getExpandedPath(String path, Map<String, Object> parameters) {
-        if (Objects.nonNull(parameters) && !parameters.isEmpty()) {
-            StringBuilder expanded = new StringBuilder(path + "?");
-            parameters.forEach((s, o) -> expanded.append(s).append("=").append(o.toString()).append("&"));
-            expanded.deleteCharAt(expanded.length() - 1);
-            return expanded.toString();
-        }
-        return path;
     }
 
     private void defaultHeaders(HttpHeaders headers, Long userId) {

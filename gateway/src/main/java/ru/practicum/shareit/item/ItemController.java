@@ -24,14 +24,14 @@ public class ItemController {
 
     private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
 
-    private final ItemClient itemWebClient;
+    private final ItemClient itemClient;
 
     @PostMapping
     @Operation(summary = "add")
     public Mono<ResponseEntity<String>> add(@Valid @RequestBody ItemDtoAdd dto,
                                             @RequestHeader(X_SHARER_USER_ID) Long userId) {
-        log.info("(add) Patch Item with userId={}, dto={}", userId, dto);
-        return itemWebClient.add(dto, userId);
+        log.info("(add) Post Item with userId={}, dto={}", userId, dto);
+        return itemClient.add(dto, userId);
     }
 
     @PatchMapping("/{itemId}")
@@ -40,7 +40,7 @@ public class ItemController {
                                                @PathVariable(value = "itemId") Long itemId,
                                                @RequestHeader(X_SHARER_USER_ID) Long userId) {
         log.info("(update) Patch Item with userId={}, itemId={}, dto={}", userId, itemId, dto);
-        return itemWebClient.update(dto, itemId, userId);
+        return itemClient.update(dto, itemId, userId);
     }
 
     @GetMapping("/{itemId}")
@@ -48,7 +48,7 @@ public class ItemController {
     public Mono<ResponseEntity<String>> findById(@PathVariable(value = "itemId") Long itemId,
                                                  @RequestHeader(X_SHARER_USER_ID) Long userId) {
         log.info("(findById) Get Item with userId={}", userId);
-        return itemWebClient.findById(itemId, userId);
+        return itemClient.findById(itemId, userId);
     }
 
     @GetMapping
@@ -57,7 +57,7 @@ public class ItemController {
                                                         @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                         @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.info("(findAllByUserId) Get Items with userId={}, from={}, size={}", userId, from, size);
-        return itemWebClient.findAllByUserId(userId, from, size);
+        return itemClient.findAllByUserId(userId, from, size);
     }
 
     @GetMapping("/search")
@@ -66,7 +66,7 @@ public class ItemController {
                                                                   @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                                   @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
         log.info("(searchByNameOrDescription) Get Items with text={}, from={}, size={}", text, from, size);
-        return itemWebClient.searchByNameOrDescription(text, from, size);
+        return itemClient.searchByNameOrDescription(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
@@ -75,6 +75,6 @@ public class ItemController {
                                                    @PathVariable(value = "itemId") Long itemId,
                                                    @RequestHeader(X_SHARER_USER_ID) Long userId) {
         log.info("(addComment) Post Comment with userId={}, itemId={}, dto={}", userId, itemId, dto);
-        return itemWebClient.addComment(dto, itemId, userId);
+        return itemClient.addComment(dto, itemId, userId);
     }
 }

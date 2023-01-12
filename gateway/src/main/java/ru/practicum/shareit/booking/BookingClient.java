@@ -60,7 +60,7 @@ public class BookingClient extends BaseClient {
         Map<String, Object> parameters = Map.of(
                 "approved", approved
         );
-        return patch("/" + bookingId, userId, parameters, null);
+        return patch("/" + bookingId + "?approved={approved}", userId, parameters, null);
     }
 
     public Mono<ResponseEntity<String>> findById(Long bookingId, long userId) {
@@ -73,7 +73,7 @@ public class BookingClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("", bookerId, parameters);
+        return get("?state={state}&from={from}&size={size}", bookerId, parameters);
     }
 
     public Mono<ResponseEntity<String>> findAllByOwnerId(Long ownerId, BookingState bookingState, Integer from, Integer size) {
@@ -82,6 +82,6 @@ public class BookingClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("/owner", ownerId, parameters);
+        return get("/owner?state={state}&from={from}&size={size}", ownerId, parameters);
     }
 }

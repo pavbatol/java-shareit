@@ -25,14 +25,14 @@ public class BookingController {
 
     private static final String X_SHARER_USER_ID = "X-Sharer-User-Id";
     private static final String ALL = "ALL";
-    private final BookingClient bookingWebClient;
+    private final BookingClient bookingClient;
 
     @PostMapping
     @Operation(summary = "add")
     public Mono<ResponseEntity<String>> add(@Valid @RequestBody BookItemRequestDto dto,
                                             @RequestHeader(X_SHARER_USER_ID) Long userId) {
-        log.info("Creating booking {}, userId={}", dto, userId);
-        return bookingWebClient.add(dto, userId);
+        log.info("(add) Post Booking with booking={}, userId={}", dto, userId);
+        return bookingClient.add(dto, userId);
     }
 
     @PatchMapping("/{bookingId}")
@@ -40,15 +40,16 @@ public class BookingController {
     public Mono<ResponseEntity<String>> approve(@RequestHeader(X_SHARER_USER_ID) Long userId,
                                                 @PathVariable(value = "bookingId") Long bookingId,
                                                 @RequestParam(value = "approved") Boolean approved) {
-        return bookingWebClient.approve(bookingId, userId, approved);
+        log.info("(approve) Patch Booking with userId={}, bookingId={}, approved={}", userId, bookingId, approved);
+        return bookingClient.approve(bookingId, userId, approved);
     }
 
     @GetMapping("/{bookingId}")
     @Operation(summary = "findById")
     public Mono<ResponseEntity<String>> findById(@RequestHeader(X_SHARER_USER_ID) Long userId,
                                                  @PathVariable(value = "bookingId") Long bookingId) {
-        log.info("Get booking {}, userId={}", bookingId, userId);
-        return bookingWebClient.findById(bookingId, userId);
+        log.info("(findById) Get Booking with booking={}, userId={}", bookingId, userId);
+        return bookingClient.findById(bookingId, userId);
     }
 
     @GetMapping
@@ -57,10 +58,9 @@ public class BookingController {
                                                           @RequestParam(value = "state", defaultValue = ALL) String state,
                                                           @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                           @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        BookingState bookingState = BookingState.from(state)
-                .orElseThrow(() -> new IllegalEnumException("Unknown state: " + state));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", state, bookerId, from, size);
-        return bookingWebClient.findAllByBookerId(bookerId, bookingState, from, size);
+        BookingState bookingState = getBookingState(state);
+        log.info("(findAllByBookerId) Get Booking with state={}, userId={}, from={}, size={}", state, bookerId, from, size);
+        return bookingClient.findAllByBookerId(bookerId, bookingState, from, size);
     }
 
     @GetMapping("/owner")
@@ -69,9 +69,13 @@ public class BookingController {
                                                          @RequestParam(value = "state", defaultValue = ALL) String state,
                                                          @PositiveOrZero @RequestParam(value = "from", defaultValue = "0") Integer from,
                                                          @Positive @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        BookingState bookingState = BookingState.from(state)
+        BookingState bookingState = getBookingState(state);
+        log.info("(findAllByOwnerId) Get Booking with state={}, userId={}, from={}, size={}", state, ownerId, from, size);
+        return bookingClient.findAllByOwnerId(ownerId, bookingState, from, size);
+    }
+
+    private BookingState getBookingState(String state) {
+        return BookingState.from(state)
                 .orElseThrow(() -> new IllegalEnumException("Unknown state: " + state));
-        log.info("Get booking with state {}, userId={}, from={}, size={}", state, ownerId, from, size);
-        return bookingWebClient.findAllByOwnerId(ownerId, bookingState, from, size);
     }
 }

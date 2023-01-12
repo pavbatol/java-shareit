@@ -68,6 +68,6 @@ public class ItemRequestClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("/all", userId, parameters);
+        return get("/all?from={from}&size={size}", userId, parameters);
     }
 }

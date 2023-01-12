@@ -70,7 +70,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("", userId, parameters);
+        return get("?from={from}&size={size}", userId, parameters);
     }
 
     public Mono<ResponseEntity<String>> searchByNameOrDescription(String text, Integer from, Integer size) {
@@ -79,7 +79,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("/search", null, parameters);
+        return get("/search?text={text}&from={from}&size={size}", null, parameters);
     }
 
     public Mono<ResponseEntity<String>> addComment(CommentDtoAdd dto, Long itemId, Long userId) {
