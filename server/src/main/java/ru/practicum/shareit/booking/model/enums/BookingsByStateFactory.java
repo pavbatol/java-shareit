@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public final class BookingsFactory {
+public final class BookingsByStateFactory {
 
     private final BookingRepository repository;
     private final Map<State, BiFunction<Long, Pageable, Page<Booking>>> bookerFunctions = getBookerFunctions();
@@ -66,8 +66,8 @@ public final class BookingsFactory {
         return get(userId, stateName, pageable, false);
     }
 
-    public static BookingsFactory getFactory(@NonNull BookingRepository repository) {
-        return new BookingsFactory(repository);
+    public static BookingsByStateFactory getFactory(@NonNull BookingRepository repository) {
+        return new BookingsByStateFactory(repository);
     }
 
     private List<Booking> get(Long userId, @NonNull String stateName, Pageable pageable, boolean booker) {

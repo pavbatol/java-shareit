@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingDtoAdd;
 import ru.practicum.shareit.booking.model.BookingMapper;
 import ru.practicum.shareit.booking.model.enums.BookingStatus;
-import ru.practicum.shareit.booking.model.enums.BookingsFactory;
+import ru.practicum.shareit.booking.model.enums.BookingsByStateFactory;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exeption.NotFoundException;
 import ru.practicum.shareit.exeption.ValidationException;
@@ -78,7 +78,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> findAllByBookerId(Long bookerId, String state, int from, int size) {
         Sort sort = Sort.by(START).descending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        BookingsFactory factory = BookingsFactory.getFactory(bookingRepository);
+        BookingsByStateFactory factory = BookingsByStateFactory.getFactory(bookingRepository);
         List<Booking> bookings = factory.getForBooker(bookerId, state, pageRequest);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + bookerId + " not found");
@@ -90,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> findAllByOwnerId(Long ownerId, String state, int from, int size) {
         Sort sort = Sort.by(START).descending();
         PageRequest pageRequest = PageRequest.of(from / size, size, sort);
-        BookingsFactory factory = BookingsFactory.getFactory(bookingRepository);
+        BookingsByStateFactory factory = BookingsByStateFactory.getFactory(bookingRepository);
         List<Booking> bookings = factory.getForOwner(ownerId, state, pageRequest);
         if (bookings.isEmpty()) {
             throw new NotFoundException("Bookings for bookerId=" + ownerId + " not found");

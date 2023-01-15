@@ -67,7 +67,7 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithDescriptionIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithDescriptionIsNull() {
         ItemRequestDto badItemRequestDto = itemRequestDto1.toBuilder().description(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -80,7 +80,7 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithDescriptionIsBlank() {
+    void add_shouldStatusOk_whenIncomingDtoWithDescriptionIsBlank() {
         ItemRequestDto badItemRequestDto = itemRequestDto1.toBuilder().description(" ").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -93,7 +93,7 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithDescriptionIsGrater512() {
+    void add_shouldStatusOk_whenIncomingDtoWithDescriptionIsGrater512() {
         ItemRequestDto badItemRequestDto = itemRequestDto1.toBuilder().description(String.valueOf(new char[513])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -106,7 +106,7 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithItemIdIsBlank() {
+    void add_shouldStatusOk_whenIncomingDtoWithItemIdIsBlank() {
         ItemRequestDto badItemRequestDto = itemRequestDto1.toBuilder().description(" ").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -168,7 +168,7 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByPage_shouldBadRequest_whenFromIsNegative() {
+    void findAllByPage_shouldStatusOk_whenFromIsNegative() {
         long userId = ID_1;
         int from = -1;
         int size = 1;
@@ -183,7 +183,7 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByPage_shouldBadRequest_whenSizeIsZero() {
+    void findAllByPage_shouldStatusOk_whenSizeIsZero() {
         long userId = ID_1;
         int from = -1;
         int size = 0;

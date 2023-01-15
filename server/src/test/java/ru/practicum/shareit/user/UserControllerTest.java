@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.practicum.shareit.exeption.AlreadyExistsException;
 import ru.practicum.shareit.exeption.IllegalEnumException;
 import ru.practicum.shareit.exeption.NotFoundException;
@@ -23,6 +24,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = UserController.class)
@@ -66,7 +68,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithNameIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithNameIsNull() {
         UserDto badUserDto = userDto1.toBuilder().name(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -79,7 +81,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithNameIsBlank() {
+    void add_shouldStatusOk_whenIncomingDtoWithNameIsBlank() {
         UserDto badUserDto = userDto1.toBuilder().name(" ").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -92,7 +94,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithNameLengthIsGrater50() {
+    void add_shouldStatusOk_whenIncomingDtoWithNameLengthIsGrater50() {
         UserDto badUserDto = userDto1.toBuilder().name(String.valueOf(new char[51])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -105,7 +107,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithEmailIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithEmailIsNull() {
         UserDto badUserDto = userDto1.toBuilder().email(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -118,7 +120,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithEmailIsBlank() {
+    void add_shouldStatusOk_whenIncomingDtoWithEmailIsBlank() {
         UserDto badUserDto = userDto1.toBuilder().email(" ").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -131,7 +133,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithBadEmail() {
+    void add_shouldStatusOk_whenIncomingDtoWithBadEmail() {
         UserDto badUserDto = userDto1.toBuilder().email("email.ru").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -160,7 +162,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void update_shouldBadRequest_whenIncomingDtoWithNameLengthIsGrater50() {
+    void update_shouldStatusOk_whenIncomingDtoWithNameLengthIsGrater50() {
         UserDto badUserDto = userDto1.toBuilder().name(String.valueOf(new char[51])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -173,7 +175,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void update_shouldBadRequest_whenIncomingDtoWithNameIsBlank() {
+    void update_shouldStatusOk_whenIncomingDtoWithNameIsBlank() {
         UserDto badUserDto = userDto1.toBuilder().name(" ").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -186,7 +188,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void update_shouldBadRequest_whenIncomingDtoWithEmailIsBlank() {
+    void update_shouldStatusOk_whenIncomingDtoWithEmailIsBlank() {
         UserDto badUserDto = userDto1.toBuilder().email(" ").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -199,7 +201,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void update_shouldBadRequest_whenIncomingDtoWithBadEmail() {
+    void update_shouldStatusOk_whenIncomingDtoWithBadEmail() {
         UserDto badUserDto = userDto1.toBuilder().email("email.ru").build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -212,7 +214,7 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void remove() {
+    void remove_shouldInvokeServiceAndStatusIsOk() {
         long userId = ID_1;
         when(userService.remove(userId)).thenReturn(userDto1);
 
@@ -324,7 +326,9 @@ class UserControllerTest {
 
         mockMvc.perform(get(URL_TEMPLATE + "/wrong_path/{userId}", userId)
                 )
-                .andExpect(status().isNotFound());
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoHandlerFoundException))
+                .andExpect(status().isNotFound())
+                .andDo(print());
     }
 
     @SneakyThrows

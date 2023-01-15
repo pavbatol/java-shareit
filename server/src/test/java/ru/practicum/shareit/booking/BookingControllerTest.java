@@ -67,7 +67,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithItemIdIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithItemIdIsNull() {
         BookingDtoAdd incomingWithItemIdIsNull = bookingDtoAdd1.toBuilder().itemId(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -82,7 +82,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithStartIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithStartIsNull() {
         BookingDtoAdd incomingWithStartIsNull = bookingDtoAdd1.toBuilder().start(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -97,7 +97,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithEndIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithEndIsNull() {
         BookingDtoAdd incomingWithEndIsNull = bookingDtoAdd1.toBuilder().end(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -112,7 +112,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithStartIsPast() {
+    void add_shouldStatusOk_whenIncomingDtoWithStartIsPast() {
         LocalDateTime past = LocalDateTime.now().minusHours(1);
         BookingDtoAdd incomingWithStartIPast = bookingDtoAdd1.toBuilder().start(past).build();
 
@@ -128,7 +128,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithEndIsPast() {
+    void add_shouldStatusOk_whenIncomingDtoWithEndIsPast() {
         LocalDateTime past = LocalDateTime.now().minusHours(1);
         BookingDtoAdd incomingWithEndIPast = bookingDtoAdd1.toBuilder().end(past).build();
 
@@ -213,7 +213,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByBookerId_shouldBadRequest_whenFromIsNegative() {
+    void findAllByBookerId_shouldStatusOk_whenFromIsNegative() {
         long userId = ID_1;
         int from = -1;
         int size = 1;
@@ -231,7 +231,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByBookerId_shouldBadRequest_whenSizeIsZero() {
+    void findAllByBookerId_shouldStatusOk_whenSizeIsZero() {
         long userId = ID_1;
         int from = 1;
         int size = 0;
@@ -286,7 +286,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByOwnerId_shouldBadRequest_whenFromIsNegative() {
+    void findAllByOwnerId_shouldStatusOk_whenFromIsNegative() {
         long userId = ID_1;
         int from = -1;
         int size = 1;
@@ -302,7 +302,7 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByOwnerId_shouldBadRequest_whenSizeIsZero() {
+    void findAllByOwnerId_shouldStatusOk_whenSizeIsZero() {
         long userId = ID_1;
         int from = 1;
         int size = 0;

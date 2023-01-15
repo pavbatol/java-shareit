@@ -10,15 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserDtoAdd;
 import ru.practicum.shareit.user.dto.UserDtoUpdate;
 
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -127,6 +133,45 @@ class UserClientTest {
                 .andExpect(status().isOk());
 
         verify(client, times(1)).findById(userId);
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsHttpMessageNotReadableException() {
+        long userId = ID_1;
+        HttpMessageNotReadableException exception = new HttpMessageNotReadableException("exception");
+        when(client.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                )
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof HttpMessageNotReadableException));
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsNoHandlerFoundException() {
+        long userId = ID_1;
+
+        mockMvc.perform(get(URL_TEMPLATE + "/wrong_path/{userId}", userId)
+                )
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoHandlerFoundException))
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @SneakyThrows
+    @Test
+    void restExceptionHandler_shouldCatchBadRequest_whenThrowsHttpServerErrorException() {
+        long userId = ID_1;
+        HttpServerErrorException exception = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        when(client.findById(userId)).thenThrow(exception);
+
+        mockMvc.perform(get(URL_TEMPLATE + "/{userId}", userId)
+                        .header(X_SHARER_USER_ID, ID_1)
+                )
+                .andExpect(status().isInternalServerError())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof HttpServerErrorException));
     }
 
     private UserDto makeUserDto(long id) {

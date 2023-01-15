@@ -74,7 +74,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithNameIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithNameIsNull() {
         ItemDto badIncomingDto = itemDto1.toBuilder().name(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -89,7 +89,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithNameLengthGrater50() {
+    void add_shouldStatusOk_whenIncomingDtoWithNameLengthGrater50() {
         ItemDto badIncomingDto = itemDto1.toBuilder().name(new String(new char[51])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -104,7 +104,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithDescriptionIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithDescriptionIsNull() {
         ItemDto badIncomingDto = itemDto1.toBuilder().description(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -119,7 +119,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithDescriptionLengthGrater200() {
+    void add_shouldStatusOk_whenIncomingDtoWithDescriptionLengthGrater200() {
         ItemDto badIncomingDto = itemDto1.toBuilder().description(new String(new char[201])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -134,7 +134,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void add_shouldBadRequest_whenIncomingDtoWithAvailableIsNull() {
+    void add_shouldStatusOk_whenIncomingDtoWithAvailableIsNull() {
         ItemDto badIncomingDto = itemDto1.toBuilder().available(null).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -168,7 +168,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void update_shouldBadRequest_whenIncomingDtoWithNameLengthGrater50() {
+    void update_shouldStatusOk_whenIncomingDtoWithNameLengthGrater50() {
         ItemDto badIncomingDto = itemDto1.toBuilder().name(String.valueOf(new char[51])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -182,7 +182,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void update_shouldBadRequest_whenIncomingDtoWithDescriptionLengthGrater200() {
+    void update_shouldStatusOk_whenIncomingDtoWithDescriptionLengthGrater200() {
         ItemDto badIncomingDto = itemDto1.toBuilder().description(String.valueOf(new char[201])).build();
 
         mockMvc.perform(post(URL_TEMPLATE)
@@ -248,7 +248,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByUserId_shouldBadRequest_whenFromIsNegative() {
+    void findAllByUserId_shouldStatusOk_whenFromIsNegative() {
         long userId = ID_1;
         int from = -1;
         int size = 1;
@@ -263,7 +263,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void findAllByUserId_shouldBadRequest_whenSizeIsZero() {
+    void findAllByUserId_shouldStatusOk_whenSizeIsZero() {
         long userId = ID_1;
         int from = 1;
         int size = 0;
@@ -300,7 +300,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void searchByNameOrDescription_shouldBadRequest_whenFromIsNegative() {
+    void searchByNameOrDescription_shouldStatusOk_whenFromIsNegative() {
         String text = "text";
         int from = -1;
         int size = 1;
@@ -316,7 +316,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void searchByNameOrDescription_shouldBadRequest_whenSizeIsZero() {
+    void searchByNameOrDescription_shouldStatusOk_whenSizeIsZero() {
         String text = "text";
         int from = 1;
         int size = 0;
@@ -351,7 +351,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addComment_whenIncomingDtoWithTextIsNull() {
+    void addComment_shouldStatusOk_whenIncomingDtoWithTextIsNull() {
         long userId = ID_1;
         long itemId = ID_1;
         CommentDto badCommentDto = commentDto1.toBuilder().text(null).build();
@@ -366,7 +366,7 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addComment_whenIncomingDtoWithTextIsEmpty() {
+    void addComment_shouldStatusOk_whenIncomingDtoWithTextIsEmpty() {
         long userId = ID_1;
         long itemId = ID_1;
         CommentDto badCommentDto = commentDto1.toBuilder().text("").build();
