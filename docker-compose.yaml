@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+
+  db_postgres:
+    image: postgres:15.1-alpine
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_DB=shareit
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+
+  server:
+    build: ./server
+    ports:
+      - "9090:9090"
+      - "9091:9091"
+    depends_on:
+      - db_postgres
+    environment:
+      - DB_NAME=shareit
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - DB_HOST=db_postgres
+      - DB_PORT=5432
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - server
+    environment:
+      - SHAREIT_SERVER_URL=http://server:9090
